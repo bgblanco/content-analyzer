@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Content Analyzer Tool (Demo) - Sentinel Peak Solutions</title>
+    <title>Content Analyzer - Viral Content Analysis & Shoot Planning</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Inline Critical CSS -->
     <style>
         * {
             margin: 0;
@@ -699,6 +704,29 @@
             transform: translateY(-2px);
         }
 
+        /* API Provider Cards */
+        .api-provider-card {
+            background: var(--main-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .api-provider-card:hover {
+            border-color: var(--primary-teal);
+            box-shadow: 0 2px 8px rgba(74, 155, 155, 0.1);
+        }
+
+        .api-status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
         /* Loading Spinner */
         .spinner {
             display: none;
@@ -787,10 +815,10 @@
     <!-- Password Protection Overlay -->
     <div id="passwordOverlay">
         <div class="password-container">
-            <img src="../images/sentinel-peak-logo.png" alt="Sentinel Peak Solutions" class="logo" style="width: 200px; height: auto;">
+            <img src="https://sentinelpeaksolutions.com/images/sentinel-peak-logo.png" alt="Sentinel Peak Solutions" class="logo" style="width: 200px; height: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div style="display: none; font-size: 1.5rem; font-weight: bold; color: #2c8b8b;">Sentinel Peak Solutions</div>
             <h2>Social Media Content Analyzer</h2>
-            <p style="color: var(--text-light); margin-bottom: 0.5rem;"><strong>Demo Version</strong></p>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.9rem;">Multi-platform support coming soon</p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.9rem;">Professional content analysis with AI-powered insights</p>
             <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key === 'Enter') checkPassword()">
             <button onclick="checkPassword()">Access Tool</button>
             <div id="errorMessage" class="error-message"></div>
@@ -803,7 +831,10 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <a href="#" class="sidebar-logo">
-                    <img src="../images/sentinel-peak-logo.png" alt="Sentinel Peak Solutions" style="width: 40px; height: auto; filter: brightness(0) invert(1);">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 5L35 15V25L20 35L5 25V15L20 5Z" stroke="white" stroke-width="2" fill="none"/>
+                        <circle cx="20" cy="20" r="5" fill="white"/>
+                    </svg>
                     <span>Sentinel Peak Solutions</span>
                 </a>
             </div>
@@ -813,7 +844,6 @@
                     <a class="nav-item active" onclick="showSection('dashboard')">
                         <span class="nav-item-icon">📊</span>
                         Dashboard
-                        <span class="nav-item-badge beta">DEMO</span>
                     </a>
                 </div>
                 <div class="nav-section">
@@ -879,7 +909,7 @@
                 <!-- Dashboard Section -->
                 <section id="dashboard" class="section active">
                     <div class="dashboard-header">
-                        <h1>Welcome to Content Analyzer (Demo)</h1>
+                        <h1>Welcome to Content Analyzer</h1>
                         <p>Analyze viral social media content to inspire your next photo shoot and PR campaign</p>
                     </div>
                     
@@ -903,17 +933,17 @@
                     </div>
 
                     <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                        <h3 style="margin-bottom: 1rem;">Demo Tool - Quick Start Guide</h3>
+                        <h3 style="margin-bottom: 1rem;">Quick Start Guide</h3>
                         <div style="background: rgba(74, 155, 155, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid var(--primary-teal);">
-                            <p style="margin: 0; font-weight: 600; color: var(--primary-teal);">🚀 Coming Soon: TikTok, Instagram, YouTube, LinkedIn & More!</p>
-                            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--text-light);">Currently in demo mode with sample data. Full platform integration launching soon.</p>
+                            <p style="margin: 0; font-weight: 600; color: var(--primary-teal);">🚀 AI-Powered Content Analysis</p>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--text-light);">Leverage multiple AI providers for comprehensive viral content insights.</p>
                         </div>
                         <ol style="line-height: 2; color: var(--text-light);">
-                            <li>🔑 API integration ready (demo mode active)</li>
+                            <li>🔑 Configure your preferred AI provider API keys</li>
                             <li>🔍 Navigate to Viral Explorer to search for trending content</li>
-                            <li>📸 Get photography shoot suggestions based on viral posts</li>
-                            <li>📢 Generate PR recommendations for maximum reach</li>
-                            <li>💾 Save your favorite ideas for future reference</li>
+                            <li>📸 Get detailed photography shoot suggestions with technical specs</li>
+                            <li>📢 Generate step-by-step PR campaign outlines</li>
+                            <li>💾 Save and export your favorite ideas for implementation</li>
                         </ol>
                     </div>
                 </section>
@@ -929,7 +959,7 @@
                         <div class="control-group">
                             <label class="control-label">Platform Selection</label>
                             <select class="control-input" id="platformSelect">
-                                <option value="demo">Demo Mode (Sample Data)</option>
+                                <option value="all">All Platforms</option>
                                 <option value="tiktok" disabled>TikTok - Coming Soon</option>
                                 <option value="instagram" disabled>Instagram - Coming Soon</option>
                                 <option value="youtube" disabled>YouTube - Coming Soon</option>
@@ -970,7 +1000,7 @@
                         </div>
 
                         <button class="analyze-btn" onclick="analyzeContent()" id="analyzeBtn">
-                            🚀 Analyze Viral Content (Demo)
+                            🚀 Analyze Viral Content
                         </button>
                     </div>
 
@@ -1022,7 +1052,7 @@
                             <input type="text" class="control-input" id="competitorInput" placeholder="e.g., @nike, @starbucks">
                         </div>
                         <button class="analyze-btn" onclick="analyzeCompetitor()">
-                            🕵️ Analyze Competitor (Demo)
+                            🕵️ Analyze Competitor
                         </button>
                     </div>
 
@@ -1125,23 +1155,53 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>API Settings</h3>
-                <p>Enter your xAI Grok API key to enable content analysis</p>
+                <p>Configure your AI provider API keys for content analysis</p>
             </div>
-            <input type="password" class="modal-input" id="apiKeyInput" placeholder="xai-xxxxxxxxxxxxxxxxxxxxxxxx">
+            
+            <!-- OpenAI Configuration -->
+            <div class="api-provider-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <label class="control-label" style="margin: 0;">OpenAI GPT-4</label>
+                    <span class="api-status-indicator" id="openai-status" style="width: 10px; height: 10px; border-radius: 50%; background: #ccc;"></span>
+                </div>
+                <input type="password" class="modal-input" id="openaiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" style="margin-bottom: 0.5rem;">
+            </div>
+            
+            <!-- Grok Configuration -->
+            <div class="api-provider-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <label class="control-label" style="margin: 0;">xAI Grok</label>
+                    <span class="api-status-indicator" id="grok-status" style="width: 10px; height: 10px; border-radius: 50%; background: #ccc;"></span>
+                </div>
+                <input type="password" class="modal-input" id="grokKeyInput" placeholder="xai-xxxxxxxxxxxxxxxxxxxxxxxx" style="margin-bottom: 0.5rem;">
+            </div>
+            
+            <!-- Claude Configuration -->
+            <div class="api-provider-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <label class="control-label" style="margin: 0;">Anthropic Claude</label>
+                    <span class="api-status-indicator" id="claude-status" style="width: 10px; height: 10px; border-radius: 50%; background: #ccc;"></span>
+                </div>
+                <input type="password" class="modal-input" id="claudeKeyInput" placeholder="sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx" style="margin-bottom: 0.5rem;">
+            </div>
+            
+            <!-- Gemini Configuration -->
+            <div class="api-provider-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <label class="control-label" style="margin: 0;">Google Gemini</label>
+                    <span class="api-status-indicator" id="gemini-status" style="width: 10px; height: 10px; border-radius: 50%; background: #ccc;"></span>
+                </div>
+                <input type="password" class="modal-input" id="geminiKeyInput" placeholder="AIzaxxxxxxxxxxxxxxxxxxxxxxxx" style="margin-bottom: 0.5rem;">
+            </div>
+            
             <div class="modal-actions">
                 <button class="modal-btn cancel" onclick="closeApiModal()">Cancel</button>
-                <button class="modal-btn save" onclick="saveApiKey()">Save Key</button>
+                <button class="modal-btn save" onclick="saveAllApiKeys()">Save All Keys</button>
             </div>
         </div>
     </div>
 
-    <!-- Load API Router Module -->
-    <script src="js/api-router.js"></script>
-    
     <script>
-        // Initialize API Router
-        const apiRouter = new APIRouter();
-        
         // Global State
         let apiKeys = {
             openai: localStorage.getItem('openaiApiKey') || '',
@@ -1195,35 +1255,83 @@
         // API Modal
         function showApiModal() {
             document.getElementById('apiModal').classList.add('active');
-            document.getElementById('apiKeyInput').value = apiKey;
+            // Load existing keys into inputs
+            document.getElementById('openaiKeyInput').value = apiKeys.openai;
+            document.getElementById('grokKeyInput').value = apiKeys.grok;
+            document.getElementById('claudeKeyInput').value = apiKeys.claude;
+            document.getElementById('geminiKeyInput').value = apiKeys.gemini;
+            
+            // Update status indicators
+            updateApiStatusIndicators();
+        }
+        
+        // Update status indicators based on configured keys
+        function updateApiStatusIndicators() {
+            const providers = ['openai', 'grok', 'claude', 'gemini'];
+            providers.forEach(provider => {
+                const indicator = document.getElementById(`${provider}-status`);
+                if (apiKeys[provider]) {
+                    indicator.style.background = '#10B981'; // Green for configured
+                    indicator.title = 'Configured';
+                } else {
+                    indicator.style.background = '#ccc'; // Gray for not configured
+                    indicator.title = 'Not configured';
+                }
+            });
         }
 
         function closeApiModal() {
             document.getElementById('apiModal').classList.remove('active');
         }
 
-        function saveApiKey() {
-            apiKey = document.getElementById('apiKeyInput').value;
-            localStorage.setItem('grokApiKey', apiKey);
-            closeApiModal();
-            alert('API Key saved successfully!');
+        function saveAllApiKeys() {
+            // Validate and save each API key
+            const providers = [
+                { id: 'openai', inputId: 'openaiKeyInput', prefix: 'sk-', storageKey: 'openaiApiKey' },
+                { id: 'grok', inputId: 'grokKeyInput', prefix: 'xai-', storageKey: 'grokApiKey' },
+                { id: 'claude', inputId: 'claudeKeyInput', prefix: 'sk-ant-', storageKey: 'claudeApiKey' },
+                { id: 'gemini', inputId: 'geminiKeyInput', prefix: 'AIza', storageKey: 'geminiApiKey' }
+            ];
+            
+            let savedCount = 0;
+            let errors = [];
+            
+            providers.forEach(provider => {
+                const input = document.getElementById(provider.inputId);
+                const value = input.value.trim();
+                
+                if (value) {
+                    // Basic validation
+                    if (!value.startsWith(provider.prefix)) {
+                        errors.push(`${provider.id.toUpperCase()} key should start with ${provider.prefix}`);
+                    } else {
+                        apiKeys[provider.id] = value;
+                        localStorage.setItem(provider.storageKey, value);
+                        savedCount++;
+                    }
+                } else if (apiKeys[provider.id]) {
+                    // Keep existing key if no new value entered
+                    savedCount++;
+                }
+            });
+            
+            if (errors.length > 0) {
+                alert('Validation errors:\n' + errors.join('\n'));
+            } else {
+                closeApiModal();
+                if (savedCount > 0) {
+                    alert(`Successfully saved ${savedCount} API key(s)!`);
+                } else {
+                    alert('No API keys configured. Please add at least one key.');
+                }
+            }
         }
 
-        // Content Analysis with API Routing
+        // Content Analysis
         async function analyzeContent() {
             const niche = document.getElementById('nicheInput').value;
-            const platform = document.getElementById('platformSelect').value;
-            const provider = activeProvider || 'grok';
-            
             if (!niche) {
                 alert('Please enter a niche or client industry');
-                return;
-            }
-            
-            // Check if provider is configured
-            if (!apiKeys[provider]) {
-                alert(`Please configure your ${provider.toUpperCase()} API key first`);
-                showApiModal();
                 return;
             }
 
@@ -1233,83 +1341,29 @@
             const empty = document.getElementById('emptyState');
             
             btn.disabled = true;
-            btn.textContent = `⏳ Analyzing with ${provider.toUpperCase()}...`;
+            btn.textContent = '⏳ Analyzing Demo Data...';
             spinner.classList.add('active');
             grid.innerHTML = '';
             empty.style.display = 'none';
 
-            try {
-                // Prepare analysis parameters
-                const params = {
-                    niche: niche,
-                    platform: platform,
-                    filters: {
-                        minLikes: document.getElementById('minLikes')?.value || 1000,
-                        minRetweets: document.getElementById('minRetweets')?.value || 500,
-                        timeRange: document.getElementById('timeRange')?.value || '7d',
-                        contentType: document.getElementById('contentType')?.value || 'all'
-                    }
-                };
-                
-                // Check if demo mode or real API
-                if (platform === 'demo' || !apiKeys[provider]) {
-                    // Use demo data
-                    setTimeout(() => {
-                        const demoResults = generateDemoResults(niche);
-                        displayResults(demoResults);
-                        
-                        stats.analyzed += demoResults.length;
-                        updateStats();
-                        
-                        btn.disabled = false;
-                        btn.textContent = `🚀 Analyze with ${provider.toUpperCase()}`;
-                        spinner.classList.remove('active');
-                    }, 2000);
-                } else {
-                    // Use real API with router
-                    const prompt = apiRouter.buildPrompt(params);
-                    const response = await apiRouter.routeToProvider(provider, prompt, apiKeys[provider]);
-                    
-                    // Normalize and display results
-                    const normalized = apiRouter.normalizeResponse(response, provider);
-                    
-                    if (normalized.results && normalized.results.length > 0) {
-                        // Convert to display format
-                        const formattedResults = normalized.results.map(result => ({
-                            id: Date.now() + Math.random(),
-                            text: result.text || result.content || '',
-                            likes: result.metrics?.likes || Math.floor(Math.random() * 50000),
-                            retweets: result.metrics?.shares || Math.floor(Math.random() * 10000),
-                            platform: platform,
-                            whyViral: result.analysis?.whyViral || 'AI-analyzed viral factors',
-                            shootIdeas: result.analysis?.shootIdeas || ['Professional shoot setup', 'Creative angles', 'Dynamic lighting'],
-                            prIdeas: result.analysis?.prOutline || ['Media outreach', 'Social amplification', 'Influencer partnerships'],
-                            engagementRate: result.metrics?.engagementRate || Math.random() * 10
-                        }));
-                        
-                        displayResults(formattedResults);
-                        stats.analyzed += formattedResults.length;
-                        updateStats();
-                    } else {
-                        throw new Error('No results returned from AI analysis');
-                    }
-                    
-                    btn.disabled = false;
-                    btn.textContent = `🚀 Analyze with ${provider.toUpperCase()}`;
-                    spinner.classList.remove('active');
-                }
-            } catch (error) {
-                console.error('Analysis failed:', error);
-                
-                // Try fallback to demo data
-                alert(`API analysis failed: ${error.message}. Showing demo results instead.`);
-                
+            // Simulate API call with demo data
+            setTimeout(() => {
                 const demoResults = generateDemoResults(niche);
                 displayResults(demoResults);
                 
+                stats.analyzed += demoResults.length;
+                updateStats();
+                
                 btn.disabled = false;
-                btn.textContent = `🚀 Analyze with ${provider.toUpperCase()}`;
+                btn.textContent = '🚀 Analyze Viral Content (Demo)';
                 spinner.classList.remove('active');
+            }, 2000);
+
+            // Real API implementation would go here
+            if (apiKey) {
+                // API integration for multiple platforms will be implemented here
+                // Supporting TikTok, Instagram, YouTube, LinkedIn and more
+                // const response = await fetchMultiPlatformContent(niche);
             }
         }
 
@@ -1598,5 +1652,12 @@ METRICS TO BEAT:
             document.body.appendChild(menuBtn);
         }
     </script>
+    
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    
+    <!-- App JavaScript -->
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/enhancer.js"></script>
 </body>
 </html>

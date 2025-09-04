@@ -1,0 +1,72 @@
+# Netlify Configuration File
+
+[build]
+  # Directory with the serverless functions
+  functions = "netlify/functions"
+  
+  # Publish directory (where your static files are)
+  publish = "."
+
+[build.environment]
+  # Node version for building
+  NODE_VERSION = "18"
+
+# Redirect API calls to serverless functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Development settings
+[dev]
+  command = "npm start"
+  port = 8888
+  targetPort = 3000
+  publish = "."
+  autoLaunch = true
+
+# Function configuration
+[functions]
+  # Directory where Netlify will look for serverless functions
+  directory = "netlify/functions"
+  
+  # Node bundler for better performance
+  node_bundler = "esbuild"
+
+# Environment variable hints (actual values set in Netlify dashboard)
+[context.production.environment]
+  # Social Media APIs
+  # YOUTUBE_API_KEY = "Set in Netlify dashboard"
+  # TIKTOK_RAPIDAPI_KEY = "Set in Netlify dashboard"
+  # INSTAGRAM_ACCESS_TOKEN = "Set in Netlify dashboard"
+  # LINKEDIN_API_KEY = "Set in Netlify dashboard"
+  
+  # AI Provider APIs
+  # OPENAI_API_KEY = "Set in Netlify dashboard"
+  # ANTHROPIC_API_KEY = "Set in Netlify dashboard"
+  # GEMINI_API_KEY = "Set in Netlify dashboard"
+  # GROK_API_KEY = "Set in Netlify dashboard"

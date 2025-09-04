@@ -1,0 +1,458 @@
+/**
+ * Content Analyzer - Main Stylesheet
+ * Modern, responsive design with smooth animations
+ */
+
+/* CSS Variables */
+:root {
+    --primary-color: #2c8b8b;
+    --primary-dark: #1E1F4B;
+    --primary-light: #4A9B9B;
+    --secondary-color: #E6F0FF;
+    --accent-color: #10B981;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+    --text-dark: #1E1F4B;
+    --text-light: #6B7280;
+    --border-color: #E5E7EB;
+    --card-bg: #FFFFFF;
+    --hover-bg: rgba(74, 155, 155, 0.1);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.2);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #4A9B9B;
+        --secondary-color: #1a1a2e;
+        --text-dark: #F9FAFB;
+        --text-light: #D1D5DB;
+        --border-color: #374151;
+        --card-bg: #1F2937;
+        --hover-bg: rgba(74, 155, 155, 0.2);
+    }
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--secondary-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Enhanced Result Cards */
+.result-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: var(--transition);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.result-card.fade-in {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.result-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-light);
+}
+
+/* Platform Badges */
+.platform-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.platform-youtube {
+    background: linear-gradient(135deg, #FF0000, #CC0000);
+    color: white;
+}
+
+.platform-tiktok {
+    background: linear-gradient(135deg, #000000, #FF0050);
+    color: white;
+}
+
+.platform-instagram {
+    background: linear-gradient(135deg, #833AB4, #FD1D1D, #FCB045);
+    color: white;
+}
+
+.platform-linkedin {
+    background: linear-gradient(135deg, #0077B5, #005885);
+    color: white;
+}
+
+.platform-demo {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+/* Analysis Sections */
+.analysis-section {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.viral-analysis {
+    background: linear-gradient(135deg, rgba(44, 139, 139, 0.05), rgba(74, 155, 155, 0.05));
+    border-left: 4px solid var(--primary-color);
+}
+
+.shoot-ideas {
+    background: linear-gradient(135deg, rgba(74, 155, 155, 0.05), rgba(44, 139, 139, 0.05));
+    border-left: 4px solid var(--primary-light);
+}
+
+.pr-outline {
+    background: linear-gradient(135deg, rgba(30, 31, 75, 0.05), rgba(44, 139, 139, 0.05));
+    border-left: 4px solid var(--primary-dark);
+}
+
+/* Shoot List Styling */
+.shoot-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.shoot-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.shoot-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(4px);
+}
+
+.shoot-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.shoot-content {
+    flex: 1;
+}
+
+.shoot-content p {
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* PR Steps */
+.pr-steps {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.pr-step {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.pr-step:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(4px);
+}
+
+.pr-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--primary-dark);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+/* Animation Preview Button */
+.preview-animation {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.preview-animation:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Animation Modal */
+.animation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.animation-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-modal:hover {
+    transform: rotate(90deg);
+}
+
+.animation-description {
+    margin-top: 1rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    border-left: 4px solid var(--accent-color);
+}
+
+.notification-error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.notification-warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.notification-info {
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Loading States */
+.spinner-small {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-dark);
+}
+
+.action-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.action-btn.save-btn {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.action-btn.save-btn:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .result-card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+    
+    .shoot-item,
+    .pr-step {
+        flex-direction: column;
+    }
+    
+    .shoot-number,
+    .pr-step-number {
+        margin-bottom: 0.5rem;
+    }
+    
+    .notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "content-analyzer",
+  "version": "2.0.0",
+  "description": "Social Media Content Analyzer - Analyze viral content and generate shoot ideas",
+  "main": "index.html",
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'No build needed for static site'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.3",
+    "@google/generative-ai": "^0.21.0",
+    "openai": "^4.67.3",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5",
+    "rate-limiter-flexible": "^5.0.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.36.4"
+  },
+  "keywords": [
+    "content-analyzer",
+    "social-media",
+    "viral-content",
+    "photography",
+    "PR",
+    "AI"
+  ],
+  "author": "Sentinel Peak Solutions",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bgblanco/content-analyzer.git"
+  }
+}
