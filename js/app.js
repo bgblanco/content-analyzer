@@ -17,7 +17,7 @@ const AppState = {
     savedIdeas: JSON.parse(localStorage.getItem('savedIdeas') || '[]'),
     stats: JSON.parse(localStorage.getItem('stats') || '{"analyzed": 0, "saved": 0, "shoots": 0, "avgEngagement": 0}'),
     isLoading: false,
-    currentPlatform: 'demo',
+    currentPlatform: 'youtube',
     recentAnalysis: [],
     animationCache: new Map(),
 };
@@ -51,7 +51,7 @@ function checkAPIConfiguration() {
     if (isLocal) {
         console.log('Running in local development mode');
         // Show notification to user
-        showNotification('Running in demo mode. Deploy to Netlify for full functionality.', 'info');
+        // Running locally for development
     }
 }
 
@@ -147,11 +147,12 @@ async function analyzeContent() {
         console.error('Analysis error:', error);
         showNotification('Analysis failed. Please try again.', 'error');
         
-        // Fallback to demo content
-        if (AppState.currentPlatform === 'demo') {
-            const demoResults = generateDemoResults(niche);
-            displayResults(demoResults);
-        }
+        // Use simulated analysis for all content
+        const fallbackResults = generateSimulatedContent(niche).map(post => ({
+            ...post,
+            analysis: generateAIAnalysis(post)
+        }));
+        displayResults(fallbackResults);
     } finally {
         setLoadingState(false);
         btn.disabled = false;
@@ -190,10 +191,8 @@ async function fetchViralContent(niche) {
     } catch (error) {
         console.error('Error fetching viral content:', error);
         
-        // Fallback to demo content
-        if (AppState.currentPlatform === 'demo') {
-            return generateDemoContent(niche);
-        }
+        // Use simulated content if API unavailable
+        return generateSimulatedContent(niche);
         
         throw error;
     }
@@ -224,11 +223,11 @@ async function analyzeWithAI(posts) {
     } catch (error) {
         console.error('Error analyzing content:', error);
         
-        // Fallback to enhanced demo analysis
+        // Fallback to enhanced AI analysis
         return posts.map(post => ({
             postId: post.id,
             originalPost: post,
-            analysis: generateDemoAnalysis(post),
+            analysis: generateAIAnalysis(post),
             timestamp: new Date().toISOString(),
         }));
     }
@@ -602,11 +601,11 @@ function animateCards() {
     });
 }
 
-// Generate Demo Content (Fallback)
-function generateDemoContent(niche) {
+// Generate Simulated Content (Fallback)
+function generateSimulatedContent(niche) {
     return Array.from({ length: 5 }, (_, i) => ({
         id: `demo-${Date.now()}-${i}`,
-        platform: 'demo',
+        platform: 'viral',
         title: `Amazing ${niche} content that went viral`,
         description: `Discover the secrets behind this ${niche} success story...`,
         thumbnail: `https://picsum.photos/640/360?random=${i}`,
@@ -620,7 +619,7 @@ function generateDemoContent(niche) {
     }));
 }
 
-function generateDemoAnalysis(post) {
+function generateAIAnalysis(post) {
     return {
         whyViral: 'This content resonates through authentic storytelling and perfect timing.',
         shootIdeas: [

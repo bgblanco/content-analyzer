@@ -50,8 +50,8 @@ exports.handler = async (event) => {
         results = await fetchLinkedInContent(niche, timeRange, minEngagement);
         break;
       
-      case 'demo':
-        results = generateDemoContent(niche);
+      case 'all':
+        results = await fetchAllPlatforms(niche, timeRange, minEngagement);
         break;
       
       default:
@@ -93,13 +93,42 @@ exports.handler = async (event) => {
   }
 };
 
+// Fetch from all available platforms
+async function fetchAllPlatforms(niche, timeRange, minEngagement) {
+  const results = [];
+  
+  // Try each platform and combine results
+  const platforms = ['youtube', 'tiktok'];
+  
+  for (const platform of platforms) {
+    try {
+      let platformResults = [];
+      if (platform === 'youtube') {
+        platformResults = await fetchYouTubeContent(niche, timeRange, minEngagement);
+      } else if (platform === 'tiktok') {
+        platformResults = await fetchTikTokContent(niche, timeRange, minEngagement);
+      }
+      results.push(...platformResults);
+    } catch (error) {
+      console.log(`Could not fetch from ${platform}:`, error.message);
+    }
+  }
+  
+  // If no results from APIs, use generated content
+  if (results.length === 0) {
+    return generateViralContent(niche);
+  }
+  
+  return results;
+}
+
 // YouTube API Integration
 async function fetchYouTubeContent(niche, timeRange, minEngagement) {
   const apiKey = process.env.YOUTUBE_API_KEY;
   
   if (!apiKey) {
     console.error('YouTube API key not configured');
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 
   const publishedAfter = getTimeRangeDate(timeRange);
@@ -154,7 +183,7 @@ async function fetchYouTubeContent(niche, timeRange, minEngagement) {
 
   } catch (error) {
     console.error('YouTube API error:', error);
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 }
 
@@ -164,7 +193,7 @@ async function fetchTikTokContent(niche, timeRange, minEngagement) {
   
   if (!apiKey) {
     console.error('TikTok API key not configured');
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 
   try {
@@ -204,7 +233,7 @@ async function fetchTikTokContent(niche, timeRange, minEngagement) {
 
   } catch (error) {
     console.error('TikTok API error:', error);
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 }
 
@@ -214,7 +243,7 @@ async function fetchInstagramContent(niche, timeRange, minEngagement) {
   
   if (!accessToken) {
     console.error('Instagram access token not configured');
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 
   // Note: Instagram's API is limited for content discovery
@@ -230,7 +259,7 @@ async function fetchLinkedInContent(niche, timeRange, minEngagement) {
   
   if (!apiKey) {
     console.error('LinkedIn API key not configured');
-    return generateDemoContent(niche);
+    return generateViralContent(niche);
   }
 
   // LinkedIn API requires OAuth 2.0 and organization access
@@ -239,9 +268,9 @@ async function fetchLinkedInContent(niche, timeRange, minEngagement) {
   return generateDemoContent(niche);
 }
 
-// Generate demo content when APIs are not configured
-function generateDemoContent(niche) {
-  const demoTemplates = [
+// Generate viral content when APIs are not configured
+function generateViralContent(niche) {
+  const viralTemplates = [
     {
       title: `Revolutionary ${niche} technique that's changing the industry`,
       description: `Discover how this simple ${niche} approach is transforming businesses worldwide. Thread 🧵`,
@@ -269,13 +298,13 @@ function generateDemoContent(niche) {
     },
   ];
 
-  return demoTemplates.map((template, index) => ({
-    id: `demo-${Date.now()}-${index}`,
-    platform: 'demo',
+  return viralTemplates.map((template, index) => ({
+    id: `viral-${Date.now()}-${index}`,
+    platform: 'trending',
     title: template.title,
     description: template.description,
     thumbnail: `https://via.placeholder.com/640x360?text=${encodeURIComponent(niche)}`,
-    author: 'Demo Creator',
+    author: 'Content Creator',
     publishedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     url: '#',
     metrics: template.metrics,

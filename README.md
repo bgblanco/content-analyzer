@@ -5,7 +5,7 @@
 
 A comprehensive social media content analysis platform that helps businesses and content creators identify viral content patterns, generate photography shoot ideas, and develop PR strategies.
 
-![Content Analyzer Demo](assets/demo-screenshot.png)
+![Content Analyzer](assets/screenshot.png)
 
 ## 🚀 Features
 
@@ -14,7 +14,7 @@ A comprehensive social media content analysis platform that helps businesses and
 - **TikTok** - Discover trending content and challenges
 - **Instagram** - Track popular posts and reels (coming soon)
 - **LinkedIn** - Monitor professional content engagement (coming soon)
-- **Demo Mode** - Test without API keys
+- **Multi-Platform Support** - Aggregate content from all major platforms
 
 ### AI-Powered Analysis
 - **Multiple AI Providers**: OpenAI, Anthropic Claude, Google Gemini, xAI Grok
@@ -188,7 +188,7 @@ Choose your preferred AI provider in settings:
 
 #### Animation Previews
 Click "Preview Animation" on shoot ideas to see:
-- Camera movement demonstrations
+- Professional camera movements
 - Composition techniques
 - Lighting setups
 

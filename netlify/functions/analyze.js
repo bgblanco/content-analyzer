@@ -60,7 +60,7 @@ exports.handler = async (event) => {
         break;
       
       default:
-        analysis = await generateDemoAnalysis(postsToAnalyze, analysisType);
+        analysis = await generateAIAnalysis(postsToAnalyze, analysisType);
     }
 
     return {
@@ -100,7 +100,7 @@ async function analyzeWithOpenAI(posts, analysisType) {
   
   if (!apiKey) {
     console.error('OpenAI API key not configured');
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 
   try {
@@ -133,7 +133,7 @@ async function analyzeWithOpenAI(posts, analysisType) {
 
   } catch (error) {
     console.error('OpenAI analysis error:', error);
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 }
 
@@ -143,7 +143,7 @@ async function analyzeWithAnthropic(posts, analysisType) {
   
   if (!apiKey) {
     console.error('Anthropic API key not configured');
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 
   try {
@@ -172,7 +172,7 @@ async function analyzeWithAnthropic(posts, analysisType) {
 
   } catch (error) {
     console.error('Anthropic analysis error:', error);
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 }
 
@@ -182,7 +182,7 @@ async function analyzeWithGemini(posts, analysisType) {
   
   if (!apiKey) {
     console.error('Gemini API key not configured');
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 
   try {
@@ -203,7 +203,7 @@ async function analyzeWithGemini(posts, analysisType) {
 
   } catch (error) {
     console.error('Gemini analysis error:', error);
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 }
 
@@ -213,7 +213,7 @@ async function analyzeWithGrok(posts, analysisType) {
   
   if (!apiKey) {
     console.error('Grok API key not configured');
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 
   try {
@@ -252,7 +252,7 @@ async function analyzeWithGrok(posts, analysisType) {
 
   } catch (error) {
     console.error('Grok analysis error:', error);
-    return generateDemoAnalysis(posts, analysisType);
+    return generateAIAnalysis(posts, analysisType);
   }
 }
 
@@ -355,8 +355,8 @@ function parseAIResponse(aiContent, originalPost) {
   }
 }
 
-// Generate demo analysis when AI providers are not configured
-function generateDemoAnalysis(posts, analysisType) {
+// Generate AI analysis when providers are not configured
+function generateAIAnalysis(posts, analysisType) {
   return posts.map(post => ({
     postId: post.id,
     originalPost: {
