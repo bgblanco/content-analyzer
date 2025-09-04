@@ -1,6 +1,33 @@
+/**
+ * Netlify Function: analyze.js
+ * Analyzes viral social media content using AI providers (OpenAI, Claude, Grok)
+ * 
+ * Testing Instructions:
+ * 1. Local testing with Netlify CLI:
+ *    - Install: npm install -g netlify-cli
+ *    - Create .env file with API keys:
+ *      OPENAI_API_KEY=your_key_here
+ *      ANTHROPIC_API_KEY=your_key_here
+ *      GROK_API_KEY=your_key_here
+ *    - Run: netlify dev
+ *    - Test endpoint: POST to http://localhost:8888/.netlify/functions/analyze
+ * 
+ * 2. Test with curl:
+ *    curl -X POST http://localhost:8888/.netlify/functions/analyze \
+ *      -H "Content-Type: application/json" \
+ *      -d '{"posts":[{"id":"1","title":"Test","description":"Test content"}],"provider":"openai"}'
+ * 
+ * 3. Test with Node.js script:
+ *    const fetch = require('node-fetch');
+ *    const response = await fetch('http://localhost:8888/.netlify/functions/analyze', {
+ *      method: 'POST',
+ *      headers: { 'Content-Type': 'application/json' },
+ *      body: JSON.stringify({ posts: [...], provider: 'claude' })
+ *    });
+ */
+
 const OpenAI = require('openai');
 const Anthropic = require('@anthropic-ai/sdk');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const fetch = require('node-fetch');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 
@@ -24,6 +51,7 @@ exports.handler = async (event) => {
     const ip = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
     await rateLimiter.consume(ip);
 
+    // Parse request body with OpenAI as default provider
     const { posts, provider = 'openai', analysisType = 'full' } = JSON.parse(event.body);
 
     // Validate required parameters
@@ -39,28 +67,28 @@ exports.handler = async (event) => {
     
     let analysis;
 
-    switch (provider) {
+    // Route to appropriate AI provider
+    switch (provider.toLowerCase()) {
       case 'openai':
+      case 'chatgpt':
+      case 'gpt':
         analysis = await analyzeWithOpenAI(postsToAnalyze, analysisType);
         break;
       
       case 'anthropic':
       case 'claude':
-        analysis = await analyzeWithAnthropic(postsToAnalyze, analysisType);
-        break;
-      
-      case 'gemini':
-      case 'google':
-        analysis = await analyzeWithGemini(postsToAnalyze, analysisType);
+        analysis = await analyzeWithClaude(postsToAnalyze, analysisType);
         break;
       
       case 'grok':
       case 'xai':
+      case 'x':
         analysis = await analyzeWithGrok(postsToAnalyze, analysisType);
         break;
       
       default:
-        analysis = await generateAIAnalysis(postsToAnalyze, analysisType);
+        // Default to OpenAI if provider not recognized
+        analysis = await analyzeWithOpenAI(postsToAnalyze, analysisType);
     }
 
     return {
@@ -70,7 +98,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         success: true,
-        provider,
+        provider: provider.toLowerCase(),
         analysisType,
         results: analysis,
       }),
@@ -89,18 +117,24 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Analysis failed. Please try again.' }),
+      body: JSON.stringify({ 
+        error: 'Analysis failed. Please try again.',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      }),
     };
   }
 };
 
-// OpenAI Analysis
+/**
+ * OpenAI/ChatGPT Analysis
+ * Uses the official OpenAI SDK
+ */
 async function analyzeWithOpenAI(posts, analysisType) {
   const apiKey = process.env.OPENAI_API_KEY;
   
   if (!apiKey) {
     console.error('OpenAI API key not configured');
-    return generateAIAnalysis(posts, analysisType);
+    throw new Error('OpenAI API key is missing. Please configure OPENAI_API_KEY environment variable.');
   }
 
   try {
@@ -110,7 +144,7 @@ async function analyzeWithOpenAI(posts, analysisType) {
       const prompt = createAnalysisPrompt(post, analysisType);
       
       const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
+        model: 'gpt-4o-mini', // Using the efficient model
         messages: [
           {
             role: 'system',
@@ -133,17 +167,20 @@ async function analyzeWithOpenAI(posts, analysisType) {
 
   } catch (error) {
     console.error('OpenAI analysis error:', error);
-    return generateAIAnalysis(posts, analysisType);
+    throw error;
   }
 }
 
-// Anthropic/Claude Analysis
-async function analyzeWithAnthropic(posts, analysisType) {
+/**
+ * Claude/Anthropic Analysis
+ * Uses the official Anthropic SDK
+ */
+async function analyzeWithClaude(posts, analysisType) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   
   if (!apiKey) {
     console.error('Anthropic API key not configured');
-    return generateAIAnalysis(posts, analysisType);
+    throw new Error('Claude API key is missing. Please configure ANTHROPIC_API_KEY environment variable.');
   }
 
   try {
@@ -153,7 +190,7 @@ async function analyzeWithAnthropic(posts, analysisType) {
       const prompt = createAnalysisPrompt(post, analysisType);
       
       const response = await anthropic.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20240620',
         max_tokens: 1500,
         temperature: 0.7,
         messages: [
@@ -164,6 +201,7 @@ async function analyzeWithAnthropic(posts, analysisType) {
         ],
       });
 
+      // Claude returns content differently than OpenAI
       const content = response.content[0].text;
       return parseAIResponse(content, post);
     }));
@@ -171,53 +209,24 @@ async function analyzeWithAnthropic(posts, analysisType) {
     return analyses;
 
   } catch (error) {
-    console.error('Anthropic analysis error:', error);
-    return generateAIAnalysis(posts, analysisType);
+    console.error('Claude analysis error:', error);
+    throw error;
   }
 }
 
-// Google Gemini Analysis
-async function analyzeWithGemini(posts, analysisType) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  if (!apiKey) {
-    console.error('Gemini API key not configured');
-    return generateAIAnalysis(posts, analysisType);
-  }
-
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    
-    const analyses = await Promise.all(posts.map(async (post) => {
-      const prompt = createAnalysisPrompt(post, analysisType);
-      
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const content = response.text();
-      
-      return parseAIResponse(content, post);
-    }));
-
-    return analyses;
-
-  } catch (error) {
-    console.error('Gemini analysis error:', error);
-    return generateAIAnalysis(posts, analysisType);
-  }
-}
-
-// xAI Grok Analysis
+/**
+ * Grok/xAI Analysis
+ * Uses fetch for REST API calls since there's no official SDK
+ */
 async function analyzeWithGrok(posts, analysisType) {
   const apiKey = process.env.GROK_API_KEY;
   
   if (!apiKey) {
     console.error('Grok API key not configured');
-    return generateAIAnalysis(posts, analysisType);
+    throw new Error('Grok API key is missing. Please configure GROK_API_KEY environment variable.');
   }
 
   try {
-    // Grok API endpoint (this is hypothetical as the actual endpoint may differ)
     const apiUrl = 'https://api.x.ai/v1/chat/completions';
     
     const analyses = await Promise.all(posts.map(async (post) => {
@@ -230,8 +239,12 @@ async function analyzeWithGrok(posts, analysisType) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'grok-1',
+          model: 'grok-beta', // Using Grok's model
           messages: [
+            {
+              role: 'system',
+              content: 'You are a social media content analyst specializing in viral content, photography direction, and PR strategy.'
+            },
             {
               role: 'user',
               content: prompt
@@ -241,6 +254,11 @@ async function analyzeWithGrok(posts, analysisType) {
           max_tokens: 1500,
         }),
       });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Grok API error: ${response.status} - ${error}`);
+      }
 
       const data = await response.json();
       const content = data.choices[0].message.content;
@@ -252,20 +270,22 @@ async function analyzeWithGrok(posts, analysisType) {
 
   } catch (error) {
     console.error('Grok analysis error:', error);
-    return generateAIAnalysis(posts, analysisType);
+    throw error;
   }
 }
 
-// Create analysis prompt based on post content
+/**
+ * Create analysis prompt based on post content
+ */
 function createAnalysisPrompt(post, analysisType) {
   const basePrompt = `
 Analyze this viral social media post and provide detailed insights:
 
 Title: ${post.title}
 Description: ${post.description}
-Platform: ${post.platform}
+Platform: ${post.platform || 'Unknown'}
 Metrics: Views: ${post.metrics?.views || 0}, Likes: ${post.metrics?.likes || 0}, Comments: ${post.metrics?.comments || 0}
-Engagement Rate: ${post.engagementRate}%
+Engagement Rate: ${post.engagementRate || '0'}%
 
 Provide the following analysis:
 
@@ -292,7 +312,9 @@ Format your response in clear sections with headers.`;
   return basePrompt + '\n\nProvide comprehensive, detailed analysis with specific examples and actionable recommendations.';
 }
 
-// Parse AI response into structured format
+/**
+ * Parse AI response into structured format
+ */
 function parseAIResponse(aiContent, originalPost) {
   // Default structure if parsing fails
   const defaultAnalysis = {
@@ -355,38 +377,30 @@ function parseAIResponse(aiContent, originalPost) {
   }
 }
 
-// Generate AI analysis when providers are not configured
-function generateAIAnalysis(posts, analysisType) {
-  return posts.map(post => ({
-    postId: post.id,
-    originalPost: {
-      title: post.title,
-      platform: post.platform,
-      metrics: post.metrics,
-      engagementRate: post.engagementRate,
-    },
-    analysis: {
-      whyViral: `This content leverages emotional storytelling, trend-jacking, and platform-specific optimization. The hook creates curiosity while the value proposition is immediately clear, driving high engagement through shareability and relatability.`,
-      shootIdeas: [
-        'Hero Shot: Low-angle perspective with subject against dramatic sky, shot during golden hour with 85mm lens at f/1.8 for beautiful bokeh. Position subject off-center using rule of thirds.',
-        'Behind-the-Scenes Documentary: Handheld camera following the process, using natural light with occasional LED panel fill. Capture candid moments and reactions at 24fps for cinematic feel.',
-        'Before/After Transformation: Consistent lighting setup with two softboxes at 45-degree angles. Use tripod for exact framing match. Shoot at f/8 for sharp details throughout.',
-        'Lifestyle Integration: Environmental portrait showing product/service in real use. Mix of wide establishing shots (24mm) and intimate close-ups (50mm). Natural light supplemented with reflector.',
-        'Motion Sequence: Capture dynamic action using 1/1000 shutter speed to freeze motion or 1/15 for intentional blur. Use continuous AF tracking and burst mode for best moments.',
+/**
+ * Test function for local development
+ * Run with: node -e "require('./analyze.js').testLocally()"
+ */
+exports.testLocally = async () => {
+  const testEvent = {
+    httpMethod: 'POST',
+    headers: { 'x-forwarded-for': '127.0.0.1' },
+    body: JSON.stringify({
+      posts: [
+        {
+          id: 'test-1',
+          title: 'Amazing transformation in 30 days',
+          description: 'Watch how this simple change transformed everything',
+          platform: 'tiktok',
+          metrics: { views: 1000000, likes: 50000, comments: 5000 },
+          engagementRate: '5.5'
+        }
       ],
-      prOutline: [
-        'Day 1-2: Draft compelling press release highlighting the unique angle and newsworthiness. Include statistics and expert quotes.',
-        'Day 3-5: Research and compile media list of 50+ relevant journalists, bloggers, and influencers in the niche. Personalize pitches.',
-        'Day 6-7: Launch coordinated social media campaign across all platforms. Use scheduling tools for optimal timing.',
-        'Day 8-10: Conduct targeted outreach to media contacts. Follow up with non-responders. Offer exclusive angles to top-tier media.',
-        'Day 11-14: Amplify coverage through paid promotion. Engage with all comments and shares. Document metrics for case study.',
-      ],
-      keyTakeaways: [
-        'Emotional resonance drives virality more than production value - focus on authentic storytelling',
-        'Platform-specific optimization is crucial - what works on TikTok won\'t necessarily work on LinkedIn',
-        'Timing and consistency matter - post when your audience is most active and maintain regular cadence',
-      ],
-    },
-    timestamp: new Date().toISOString(),
-  }));
-}
+      provider: 'openai', // Change to 'claude' or 'grok' to test other providers
+      analysisType: 'full'
+    })
+  };
+
+  const result = await exports.handler(testEvent);
+  console.log('Test Result:', JSON.parse(result.body));
+};

@@ -113,10 +113,6 @@ body {
     color: white;
 }
 
-.platform-demo {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    color: white;
-}
 
 /* Analysis Sections */
 .analysis-section {

@@ -4,7 +4,8 @@
   "description": "Social Media Content Analyzer - Analyze viral content and generate shoot ideas",
   "main": "index.html",
   "scripts": {
-    "start": "netlify dev",
+    "start": "echo 'Static site ready'",
+    "dev": "netlify dev",
     "build": "echo 'No build needed for static site'",
     "deploy": "netlify deploy --prod"
   },
