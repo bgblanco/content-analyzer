@@ -1234,29 +1234,113 @@
             const empty = document.getElementById('emptyState');
             
             btn.disabled = true;
-            btn.textContent = '⏳ Analyzing Content...';
+            btn.textContent = '⏳ Fetching Viral Content...';
             spinner.classList.add('active');
             grid.innerHTML = '';
             empty.style.display = 'none';
 
-            // Fetch and analyze viral content
-            setTimeout(() => {
-                const results = generateViralResults(niche);
-                displayResults(results);
+            try {
+                // Get user selections
+                const platform = document.getElementById('platformSelect').value || 'all';
+                const timeRange = document.getElementById('timeRange').value || '7d';
                 
-                stats.analyzed += results.length;
-                updateStats();
+                // Fetch viral content from API
+                const response = await fetch('/.netlify/functions/fetch-viral', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        niche: niche,
+                        platform: platform,
+                        timeRange: timeRange
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
                 
+                if (data.success && data.results) {
+                    // Now analyze each post for detailed insights
+                    btn.textContent = '⏳ Analyzing Content...';
+                    
+                    const analyzedResults = await analyzeViralPosts(data.results.slice(0, 6)); // Analyze first 6 posts
+                    displayResults(analyzedResults);
+                    
+                    stats.analyzed += analyzedResults.length;
+                    updateStats();
+                } else {
+                    throw new Error('No results returned from API');
+                }
+                
+            } catch (error) {
+                console.error('Error fetching content:', error);
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--danger-color);">
+                        <h3>Error Loading Content</h3>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">Please check your connection and try again.</p>
+                    </div>
+                `;
+            } finally {
                 btn.disabled = false;
                 btn.textContent = '🚀 Analyze Viral Content';
                 spinner.classList.remove('active');
-            }, 2000);
+            }
+        }
 
-            // Real API implementation would go here
-            if (apiKey) {
-                // API integration for multiple platforms will be implemented here
-                // Supporting TikTok, Instagram, YouTube, LinkedIn and more
-                // const response = await fetchMultiPlatformContent(niche);
+        // Analyze viral posts for detailed insights
+        async function analyzeViralPosts(posts) {
+            try {
+                // Get the selected AI provider (default to OpenAI)
+                const provider = localStorage.getItem('selectedProvider') || 'openai';
+                
+                const response = await fetch('/.netlify/functions/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        posts: posts,
+                        provider: provider,
+                        analysisType: 'full'
+                    })
+                });
+
+                if (!response.ok) {
+                    // If analysis fails, return posts with basic analysis
+                    return posts.map(post => ({
+                        ...post,
+                        analysis: {
+                            whyViral: 'High engagement metrics and trending content',
+                            shootIdeas: ['Capture authentic moments', 'Use natural lighting', 'Focus on storytelling', 'Include behind-the-scenes', 'Show transformation'],
+                            prOutline: ['Create press release', 'Reach out to media', 'Build social campaign'],
+                            keyTakeaways: ['Authenticity drives engagement', 'Visual content performs better', 'Timing is crucial']
+                        }
+                    }));
+                }
+
+                const data = await response.json();
+                
+                if (data.success && data.results) {
+                    // Merge analysis with original posts
+                    return posts.map((post, index) => {
+                        const analysis = data.results[index]?.analysis || {};
+                        return {
+                            ...post,
+                            analysis: analysis
+                        };
+                    });
+                }
+                
+                return posts;
+            } catch (error) {
+                console.error('Analysis error:', error);
+                // Return posts without analysis on error
+                return posts;
             }
         }
 
@@ -1317,50 +1401,79 @@
             const card = document.createElement('div');
             card.className = 'result-card';
             
+            // Use thumbnail if available, otherwise use placeholder
             let mediaHtml = '';
-            if (data.image) {
+            if (data.thumbnail) {
                 mediaHtml = `
                     <div class="result-media">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 225'%3E%3Crect fill='%23E6F0FF'/%3E%3Ctext x='200' y='112' text-anchor='middle' font-size='20' fill='%236B7280'%3E📸 Image Preview%3C/text%3E%3C/svg%3E" alt="Content preview">
+                        <img src="${data.thumbnail}" alt="${data.title || 'Content preview'}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 225%22%3E%3Crect fill=%22%23E6F0FF%22/%3E%3Ctext x=%22200%22 y=%22112%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%236B7280%22%3E📸 ${data.platform || 'Content'}%3C/text%3E%3C/svg%3E'">
+                        ${data.contentType === 'video' ? '<div class="play-button">▶</div>' : ''}
                     </div>
                 `;
-            } else if (data.video) {
+            } else if (data.contentType === 'video' || data.video) {
                 mediaHtml = `
                     <div class="result-media">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 225'%3E%3Crect fill='%23E6F0FF'/%3E%3Ctext x='200' y='112' text-anchor='middle' font-size='20' fill='%236B7280'%3E🎥 Video Preview%3C/text%3E%3C/svg%3E" alt="Video preview">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 225'%3E%3Crect fill='%23E6F0FF'/%3E%3Ctext x='200' y='112' text-anchor='middle' font-size='20' fill='%236B7280'%3E🎥 ${data.platform || 'Video'}%3C/text%3E%3C/svg%3E" alt="Video preview">
                         <div class="play-button">▶</div>
                     </div>
                 `;
+            } else {
+                mediaHtml = `
+                    <div class="result-media">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 225'%3E%3Crect fill='%23E6F0FF'/%3E%3Ctext x='200' y='112' text-anchor='middle' font-size='20' fill='%236B7280'%3E📸 ${data.platform || 'Content'}%3C/text%3E%3C/svg%3E" alt="Content preview">
+                    </div>
+                `;
             }
+            
+            // Extract metrics properly from the data structure
+            const metrics = data.metrics || {};
+            const views = metrics.views || 0;
+            const likes = metrics.likes || 0;
+            const comments = metrics.comments || 0;
+            const shares = metrics.shares || metrics.retweets || 0;
+            
+            // Get analysis data if available
+            const analysis = data.analysis || {};
+            const whyViral = analysis.whyViral || data.whyViral || (data.viralFactors ? data.viralFactors.join('. ') : 'High engagement and trending content');
+            const shootIdeas = analysis.shootIdeas || data.shootIdeas || ['Capture authentic moments', 'Use natural lighting', 'Focus on storytelling', 'Include behind-the-scenes', 'Show transformation'];
+            const prIdeas = analysis.prOutline || analysis.prIdeas || data.prIdeas || ['Create press release', 'Reach out to media', 'Build social campaign'];
+            
+            // Ensure arrays for shoot and PR ideas
+            const shootIdeasArray = Array.isArray(shootIdeas) ? shootIdeas : [shootIdeas];
+            const prIdeasArray = Array.isArray(prIdeas) ? prIdeas : [prIdeas];
             
             card.innerHTML = `
                 ${mediaHtml}
                 <div class="result-content">
                     <div class="result-metrics">
-                        <span class="metric" style="background: var(--primary-teal); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">${data.platform || 'TikTok'}</span>
-                        <span class="metric">❤️ ${formatNumber(data.likes)}</span>
-                        <span class="metric">🔄 ${formatNumber(data.retweets)}</span>
-                        <span class="metric">📊 ${data.engagementRate}%</span>
+                        <span class="metric" style="background: var(--primary-teal); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">${data.platform || 'Social'}</span>
+                        ${views ? `<span class="metric">👁 ${formatNumber(views)}</span>` : ''}
+                        <span class="metric">❤️ ${formatNumber(likes)}</span>
+                        ${comments ? `<span class="metric">💬 ${formatNumber(comments)}</span>` : ''}
+                        ${shares ? `<span class="metric">🔄 ${formatNumber(shares)}</span>` : ''}
+                        ${data.engagementRate ? `<span class="metric">📊 ${data.engagementRate}%</span>` : ''}
                     </div>
                     
-                    <p class="result-text">${data.text}</p>
+                    <h3 style="margin: 1rem 0 0.5rem; color: var(--text-dark); font-size: 1.1rem;">${data.title || 'Viral Content'}</h3>
+                    <p class="result-text">${data.description || data.text || 'Trending content that captures audience attention'}</p>
+                    ${data.author ? `<p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">by ${data.author}</p>` : ''}
                     
                     <div class="viral-analysis">
                         <h4>Why It's Viral</h4>
-                        <p>${data.whyViral}</p>
+                        <p>${whyViral}</p>
                     </div>
                     
                     <div class="shoot-suggestions">
                         <h4>Photography Shoot Ideas</h4>
                         <ul>
-                            ${data.shootIdeas.map(idea => `<li>${idea}</li>`).join('')}
+                            ${shootIdeasArray.slice(0, 5).map(idea => `<li>${idea}</li>`).join('')}
                         </ul>
                     </div>
                     
                     <div class="pr-recommendations">
                         <h4>PR Recommendations</h4>
                         <ul>
-                            ${data.prIdeas.map(idea => `<li>${idea}</li>`).join('')}
+                            ${prIdeasArray.slice(0, 3).map(idea => `<li>${idea}</li>`).join('')}
                         </ul>
                     </div>
                     
@@ -1407,22 +1520,36 @@
 
         // Export Shoot Plan
         function exportShootPlan(data) {
+            // Get analysis data if available
+            const analysis = data.analysis || {};
+            const shootIdeas = analysis.shootIdeas || data.shootIdeas || ['Capture authentic moments', 'Use natural lighting', 'Focus on storytelling'];
+            const prIdeas = analysis.prOutline || analysis.prIdeas || data.prIdeas || ['Create press release', 'Reach out to media'];
+            
+            // Ensure arrays
+            const shootIdeasArray = Array.isArray(shootIdeas) ? shootIdeas : [shootIdeas];
+            const prIdeasArray = Array.isArray(prIdeas) ? prIdeas : [prIdeas];
+            
+            const metrics = data.metrics || {};
             const plan = `
 PHOTOGRAPHY SHOOT PLAN
 ======================
 Date: ${new Date().toLocaleDateString()}
-Inspiration: ${data.text}
+Platform: ${data.platform || 'Social Media'}
+Title: ${data.title || 'Viral Content'}
+Description: ${data.description || data.text || 'Trending content'}
 
 SHOT LIST:
-${data.shootIdeas.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
+${shootIdeasArray.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
 
 PR STRATEGY:
-${data.prIdeas.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
+${prIdeasArray.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
 
 METRICS TO BEAT:
-- Likes: ${formatNumber(data.likes)}
-- Retweets: ${formatNumber(data.retweets)}
-- Engagement Rate: ${data.engagementRate}%
+- Views: ${formatNumber(metrics.views || 0)}
+- Likes: ${formatNumber(metrics.likes || data.likes || 0)}
+- Comments: ${formatNumber(metrics.comments || 0)}
+- Shares: ${formatNumber(metrics.shares || data.retweets || 0)}
+- Engagement Rate: ${data.engagementRate || '0'}%
             `;
             
             const blob = new Blob([plan], { type: 'text/plain' });
