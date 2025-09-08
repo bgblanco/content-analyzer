@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Analyzer - Viral Content Analysis & Shoot Planning</title>
+    <title>Sentinel Peak Solutions - Content Analyzer | Real-Time Marketing Intelligence</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/sentinel-peak-logo.png">
     
     <!-- External CSS -->
     <link rel="stylesheet" href="css/styles.css">
@@ -17,18 +20,21 @@
         }
 
         :root {
-            --sidebar-bg: #1E1F4B;
-            --main-bg: #E6F0FF;
+            --sidebar-bg: #2A2A2A;
+            --main-bg: #F5F7FA;
             --card-bg: #FFFFFF;
-            --primary-blue: #2c8b8b;
-            --primary-teal: #4A9B9B;
-            --text-dark: #1E1F4B;
+            --primary-teal: #4A9B9E;
+            --primary-gray: #5A5A5A;
+            --secondary-teal: #3A8B8E;
+            --light-teal: #6ABBBE;
+            --text-dark: #2A2A2A;
             --text-light: #6B7280;
             --border-color: #E5E7EB;
             --success-color: #10B981;
             --warning-color: #F59E0B;
             --danger-color: #EF4444;
-            --hover-bg: rgba(74, 155, 155, 0.1);
+            --hover-bg: rgba(74, 155, 158, 0.1);
+            --gradient-teal: linear-gradient(135deg, #4A9B9E, #3A8B8E);
         }
 
         body {
@@ -133,7 +139,7 @@
         }
 
         .nav-item-badge.beta {
-            background: var(--primary-blue);
+            background: var(--secondary-teal);
         }
 
         /* Main Content */
@@ -171,8 +177,8 @@
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(44, 139, 139, 0.1);
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(74, 155, 158, 0.1);
         }
 
         .search-icon {
@@ -266,7 +272,7 @@
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--primary-teal);
             margin-bottom: 0.25rem;
         }
 
@@ -310,7 +316,7 @@
 
         .control-input:focus {
             outline: none;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-teal);
         }
 
         .filters-row {
@@ -439,7 +445,7 @@
         }
 
         .viral-analysis h4 {
-            color: var(--primary-blue);
+            color: var(--primary-teal);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
@@ -489,7 +495,7 @@
         }
 
         .pr-recommendations h4 {
-            color: var(--primary-blue);
+            color: var(--primary-gray);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
@@ -535,13 +541,13 @@
         }
 
         .action-btn.save {
-            background: var(--primary-blue);
+            background: var(--primary-teal);
             color: white;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-teal);
         }
 
         .action-btn.save:hover {
-            background: var(--primary-blue);
+            background: var(--secondary-teal);
             opacity: 0.9;
         }
 
@@ -669,6 +675,17 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(0.95);
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -708,6 +725,27 @@
             }
         }
 
+        /* Tab Buttons */
+        .tab-btn {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-teal);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-teal);
+            border-bottom-color: var(--primary-teal);
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -739,11 +777,11 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <a href="#" class="sidebar-logo">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="white" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 5L35 15V25L20 35L5 25V15L20 5Z" stroke="white" stroke-width="2" fill="none"/>
-                        <circle cx="20" cy="20" r="5" fill="white"/>
-                    </svg>
-                    <span>Sentinel Peak Solutions</span>
+                    <img src="images/sentinel-peak-logo.png" alt="Sentinel Peak Solutions" style="width: 45px; height: 45px; object-fit: contain;">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-size: 1.1rem; font-weight: 700; color: #FFFFFF;">SENTINEL PEAK</span>
+                        <span style="font-size: 0.85rem; font-weight: 400; color: var(--primary-teal); letter-spacing: 0.15em;">SOLUTIONS</span>
+                    </div>
                 </a>
             </div>
             <nav class="nav-menu">
@@ -767,7 +805,12 @@
                     </a>
                 </div>
                 <div class="nav-section">
-                    <div class="nav-section-title">Competition</div>
+                    <div class="nav-section-title">Market Intelligence</div>
+                    <a class="nav-item" onclick="showSection('trends')">
+                        <span class="nav-item-icon">📈</span>
+                        Google Trends
+                        <span class="nav-item-badge" style="background: var(--gradient-teal);">LIVE</span>
+                    </a>
                     <a class="nav-item" onclick="showSection('competitor')">
                         <span class="nav-item-icon">🕵️</span>
                         Competitor Spy
@@ -947,25 +990,211 @@
                     </div>
                 </section>
 
-                <!-- Competitor Spy Section -->
-                <section id="competitor" class="section">
+                <!-- Google Trends Section -->
+                <section id="trends" class="section">
                     <div class="dashboard-header">
-                        <h1>Competitor Spy</h1>
-                        <p>Track and analyze competitor social media strategies</p>
+                        <h1>Google Trends - Real-Time Market Intelligence</h1>
+                        <p>Discover trending topics and seasonal opportunities for your content strategy</p>
                     </div>
                     
                     <div class="explorer-controls">
-                        <div class="control-group">
-                            <label class="control-label">Social Media Username</label>
-                            <input type="text" class="control-input" id="competitorInput" placeholder="e.g., @nike, @starbucks">
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Industry Category</label>
+                                <select class="control-input" id="trendCategory">
+                                    <option value="marketing">Marketing & Advertising</option>
+                                    <option value="photography">Photography & Media</option>
+                                    <option value="fitness">Health & Fitness</option>
+                                    <option value="restaurant">Food & Restaurant</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="fashion">Fashion & Beauty</option>
+                                    <option value="travel">Travel & Tourism</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Geographic Region</label>
+                                <select class="control-input" id="trendGeo">
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="GLOBAL">Global</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Time Period</label>
+                                <select class="control-input" id="trendTime">
+                                    <option value="now">Real-time</option>
+                                    <option value="today">Past 24 hours</option>
+                                    <option value="week">Past 7 days</option>
+                                    <option value="month">Past 30 days</option>
+                                </select>
+                            </div>
                         </div>
-                        <button class="analyze-btn" onclick="analyzeCompetitor()">
-                            🕵️ Analyze Competitor
+                        <button class="analyze-btn" onclick="fetchGoogleTrends()">
+                            📊 Get Live Trends
                         </button>
                     </div>
 
-                    <div class="results-grid" id="competitorResults">
-                        <!-- Competitor analysis results -->
+                    <!-- Trending Topics Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                        <!-- Live Trending Topics -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-teal); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🔥 Trending Now
+                                <span style="background: #EF4444; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 12px; animation: pulse 2s infinite;">LIVE</span>
+                            </h3>
+                            <div id="trendingTopics">
+                                <!-- Topics will be inserted here -->
+                                <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                    Select category and click "Get Live Trends"
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rising Searches -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-teal); margin-bottom: 1rem;">
+                                📈 Rising Searches
+                            </h3>
+                            <div id="risingSearches">
+                                <!-- Rising searches will be inserted here -->
+                                <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                    Waiting for trend data...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Related Queries -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-teal); margin-bottom: 1rem;">
+                                🔍 Related Queries
+                            </h3>
+                            <div id="relatedQueries">
+                                <!-- Related queries will be inserted here -->
+                                <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                    Waiting for trend data...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seasonal Trends -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-teal); margin-bottom: 1rem;">
+                                📅 Seasonal Opportunities
+                            </h3>
+                            <div id="seasonalTrends">
+                                <!-- Seasonal trends will be inserted here -->
+                                <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                    Waiting for trend data...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trend Insights -->
+                    <div style="background: linear-gradient(135deg, rgba(74, 155, 158, 0.1), rgba(58, 139, 142, 0.1)); padding: 2rem; border-radius: 12px; margin-top: 2rem; border: 1px solid var(--primary-teal);">
+                        <h3 style="color: var(--primary-teal); margin-bottom: 1rem;">💡 How to Use These Trends</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                            <div>
+                                <h4 style="color: var(--text-dark); font-size: 0.95rem; margin-bottom: 0.5rem;">📸 For Photography</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-light);">Plan shoots around trending topics to maximize viral potential</p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--text-dark); font-size: 0.95rem; margin-bottom: 0.5rem;">📱 For Social Media</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-light);">Create content that aligns with rising searches for better discovery</p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--text-dark); font-size: 0.95rem; margin-bottom: 0.5rem;">📢 For PR Campaigns</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-light);">Time your campaigns with seasonal peaks for maximum impact</p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--text-dark); font-size: 0.95rem; margin-bottom: 0.5rem;">🎯 For Targeting</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-light);">Use related queries to understand your audience's language</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Competitor Spy Section -->
+                <section id="competitor" class="section">
+                    <div class="dashboard-header">
+                        <h1>Competitor Intelligence System</h1>
+                        <p>Real-time competitor tracking with actionable insights for outperforming your competition</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Competitor Username</label>
+                                <input type="text" class="control-input" id="competitorInput" placeholder="e.g., @nike, @starbucks">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Platform</label>
+                                <select class="control-input" id="competitorPlatform">
+                                    <option value="instagram">Instagram</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="twitter">Twitter/X</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Analysis Type</label>
+                                <select class="control-input" id="analysisType">
+                                    <option value="full">Full Analysis</option>
+                                    <option value="content">Content Strategy</option>
+                                    <option value="engagement">Engagement Patterns</option>
+                                    <option value="performance">Performance Metrics</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="analyze-btn" onclick="analyzeCompetitor()">
+                            🔍 Run Competitor Analysis
+                        </button>
+                    </div>
+
+                    <!-- Analysis Results Container -->
+                    <div id="competitorAnalysis" style="display: none;">
+                        <!-- Overview Cards -->
+                        <div class="stats-grid" id="competitorOverview" style="margin-top: 2rem;">
+                            <!-- Overview stats will be inserted here -->
+                        </div>
+
+                        <!-- Detailed Analysis Tabs -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 1px solid var(--border-color);">
+                            <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                                <button class="tab-btn active" onclick="showCompetitorTab('strategy')">📊 Content Strategy</button>
+                                <button class="tab-btn" onclick="showCompetitorTab('performance')">📈 Performance</button>
+                                <button class="tab-btn" onclick="showCompetitorTab('patterns')">⏰ Posting Patterns</button>
+                                <button class="tab-btn" onclick="showCompetitorTab('engagement')">💬 Engagement</button>
+                                <button class="tab-btn" onclick="showCompetitorTab('recommendations')">💡 Recommendations</button>
+                            </div>
+                            
+                            <div id="competitorTabs">
+                                <!-- Tab content will be inserted here -->
+                            </div>
+                        </div>
+
+                        <!-- Real-time Activity Feed -->
+                        <div style="background: linear-gradient(135deg, rgba(74, 155, 158, 0.05), rgba(58, 139, 142, 0.05)); padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 1px solid var(--primary-teal);">
+                            <h3 style="color: var(--primary-teal); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🔴 Live Activity Monitor
+                                <span style="background: #EF4444; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 12px; animation: pulse 2s infinite;">LIVE</span>
+                            </h3>
+                            <div id="competitorActivity">
+                                <!-- Live activity feed will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="competitorEmpty">
+                        <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <h3>No competitor analysis yet</h3>
+                        <p>Enter a competitor's username to start tracking their strategy</p>
                     </div>
                 </section>
 
@@ -1244,8 +1473,11 @@
                 const platform = document.getElementById('platformSelect').value || 'all';
                 const timeRange = document.getElementById('timeRange').value || '7d';
                 
-                // Fetch viral content from API
-                const response = await fetch('/.netlify/functions/fetch-viral', {
+                // Fetch viral content from API (works locally and on Netlify)
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? '/api/fetch-viral' 
+                    : '/.netlify/functions/fetch-viral';
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1298,7 +1530,10 @@
                 // Get the selected AI provider (default to OpenAI)
                 const provider = localStorage.getItem('selectedProvider') || 'openai';
                 
-                const response = await fetch('/.netlify/functions/analyze', {
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? '/api/analyze' 
+                    : '/.netlify/functions/analyze';
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1579,22 +1814,419 @@ METRICS TO BEAT:
             a.click();
         }
 
-        // Analyze Competitor
-        function analyzeCompetitor() {
-            const username = document.getElementById('competitorInput').value;
+        // Analyze Competitor with Real-time Data
+        async function analyzeCompetitor() {
+            const username = document.getElementById('competitorInput').value.trim();
+            const platform = document.getElementById('competitorPlatform').value;
+            const analysisType = document.getElementById('analysisType').value;
+            
             if (!username) {
                 alert('Please enter a competitor username');
                 return;
             }
-            
-            // Simulate competitor analysis
-            const results = generateViralResults(username);
-            const grid = document.getElementById('competitorResults');
-            grid.innerHTML = '';
-            results.forEach(result => {
-                const card = createResultCard(result);
-                grid.appendChild(card);
+
+            // Hide empty state, show loading
+            document.getElementById('competitorEmpty').style.display = 'none';
+            document.getElementById('competitorAnalysis').style.display = 'block';
+            document.getElementById('competitorOverview').innerHTML = '<div class="spinner active" style="margin: 2rem auto;"></div>';
+            document.getElementById('competitorTabs').innerHTML = '<div class="spinner active" style="margin: 2rem auto;"></div>';
+
+            try {
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? '/api/competitor-analysis' 
+                    : '/.netlify/functions/competitor-analysis';
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        platform: platform,
+                        analysisType: analysisType
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    displayCompetitorOverview(result.data.overview);
+                    displayCompetitorAnalysis(result.data);
+                    startLiveActivityFeed(username);
+                    
+                    // Auto-refresh every 60 seconds for real-time updates
+                    setTimeout(() => {
+                        if (document.getElementById('competitor').classList.contains('active')) {
+                            analyzeCompetitor();
+                        }
+                    }, 60000);
+                }
+            } catch (error) {
+                console.error('Error analyzing competitor:', error);
+                document.getElementById('competitorOverview').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--danger-color);">
+                        <h3>Error Loading Analysis</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display Competitor Overview
+        function displayCompetitorOverview(overview) {
+            const html = `
+                <div class="stat-card">
+                    <div class="stat-value">${formatNumber(overview.metrics.followers)}</div>
+                    <div class="stat-label">Followers</div>
+                    <div style="color: var(--success-color); font-size: 0.85rem; margin-top: 0.5rem;">
+                        ${overview.metrics.growthRate} this month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${overview.metrics.engagementRate}</div>
+                    <div class="stat-label">Engagement Rate</div>
+                    <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+                        Avg: ${formatNumber(overview.metrics.avgLikes)} likes
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${overview.metrics.posts}</div>
+                    <div class="stat-label">Total Posts</div>
+                    <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+                        ${overview.recentActivity.last7Days} this week
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${overview.metrics.reachRate}</div>
+                    <div class="stat-label">Reach Rate</div>
+                    <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+                        Of follower base
+                    </div>
+                </div>
+            `;
+            document.getElementById('competitorOverview').innerHTML = html;
+        }
+
+        // Display Detailed Competitor Analysis
+        function displayCompetitorAnalysis(data) {
+            window.competitorData = data; // Store for tab switching
+            showCompetitorTab('strategy'); // Show first tab by default
+        }
+
+        // Show Competitor Tab
+        function showCompetitorTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
+            event.target?.classList.add('active');
+
+            const data = window.competitorData;
+            if (!data) return;
+
+            let content = '';
+
+            switch(tab) {
+                case 'strategy':
+                    content = renderStrategyTab(data.contentStrategy);
+                    break;
+                case 'performance':
+                    content = renderPerformanceTab(data.performanceMetrics);
+                    break;
+                case 'patterns':
+                    content = renderPatternsTab(data.postingPatterns);
+                    break;
+                case 'engagement':
+                    content = renderEngagementTab(data.engagementAnalysis);
+                    break;
+                case 'recommendations':
+                    content = renderRecommendationsTab(data.recommendations);
+                    break;
+            }
+
+            document.getElementById('competitorTabs').innerHTML = content;
+        }
+
+        // Render Strategy Tab
+        function renderStrategyTab(strategy) {
+            return `
+                <div>
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Content Mix Analysis</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        ${strategy.contentMix.map(content => `
+                            <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-teal);">${content.percentage}%</div>
+                                <div style="font-weight: 600; margin: 0.5rem 0;">${content.type}</div>
+                                <div style="font-size: 0.85rem; color: ${content.performance === 'Very High' ? '#10B981' : content.performance === 'High' ? '#F59E0B' : '#6B7280'};">
+                                    ${content.performance} Performance
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Top Performing Hashtags</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        ${strategy.topHashtags.map(tag => `
+                            <span style="background: var(--gradient-teal); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                                ${tag}
+                            </span>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Content Themes</h4>
+                    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                        ${strategy.contentThemes.map(theme => `
+                            <div style="display: flex; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                                <span style="font-weight: 600;">${theme.theme}</span>
+                                <div style="display: flex; gap: 2rem;">
+                                    <span>Frequency: ${theme.frequency}%</span>
+                                    <span style="color: ${theme.engagement === 'Very High' ? '#10B981' : theme.engagement === 'High' ? '#F59E0B' : '#6B7280'};">
+                                        ${theme.engagement} Engagement
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Performance Tab
+        function renderPerformanceTab(metrics) {
+            return `
+                <div>
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Engagement Trends</h4>
+                    <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                            <div>
+                                <strong>Best Day:</strong> ${metrics.engagement.bestPerformingDay}
+                            </div>
+                            <div>
+                                <strong>Best Time:</strong> ${metrics.engagement.bestPerformingTime}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Reach Breakdown</h4>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="flex: 1; background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary-teal);">${metrics.reach.organic}%</div>
+                            <div>Organic Reach</div>
+                        </div>
+                        <div style="flex: 1; background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary-gray);">${metrics.reach.paid}%</div>
+                            <div>Paid Reach</div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Audience Demographics</h4>
+                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Top Locations:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                ${metrics.audience.topLocations.map(loc => `
+                                    <span style="background: var(--hover-bg); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">
+                                        ${loc}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Age Distribution:</strong>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                                ${metrics.audience.ageGroups.map(age => `
+                                    <div style="text-align: center;">
+                                        <div style="font-weight: 700; color: var(--primary-teal);">${age.percentage}%</div>
+                                        <div style="font-size: 0.85rem;">${age.range}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Patterns Tab
+        function renderPatternsTab(patterns) {
+            return `
+                <div>
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Posting Frequency</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-teal);">${patterns.frequency.daily}</div>
+                            <div>Posts/Day</div>
+                        </div>
+                        <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-teal);">${patterns.frequency.weekly}</div>
+                            <div>Posts/Week</div>
+                        </div>
+                        <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-teal);">${patterns.frequency.monthly}</div>
+                            <div>Posts/Month</div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Optimal Posting Times</h4>
+                    <div style="display: grid; gap: 0.5rem; margin-bottom: 2rem;">
+                        ${patterns.optimalTimes.map(time => `
+                            <div style="display: flex; justify-content: space-between; background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <div>
+                                    <strong>${time.time}</strong>
+                                    <span style="margin-left: 1rem; color: var(--text-light);">${time.reason}</span>
+                                </div>
+                                <span style="color: ${time.engagement === 'Very High' ? '#10B981' : '#F59E0B'};">
+                                    ${time.engagement} Engagement
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Consistency Score</h4>
+                    <div style="background: linear-gradient(135deg, rgba(74, 155, 158, 0.1), rgba(58, 139, 142, 0.1)); padding: 1rem; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--primary-teal);">${patterns.consistency.score}/100</div>
+                        <div style="margin-top: 0.5rem;">Current Streak: ${patterns.consistency.streak} days</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);">${patterns.consistency.gaps}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Engagement Tab
+        function renderEngagementTab(engagement) {
+            return `
+                <div>
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Top Performing Content</h4>
+                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                        ${engagement.topPerformingContent.map(content => `
+                            <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${content.type}</strong>
+                                        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">
+                                            ${content.example}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-teal);">
+                                            ${content.engagement}
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-light);">
+                                            ${formatNumber(content.likes)} likes • ${content.comments} comments
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">Engagement Tactics</h4>
+                    <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px;">
+                        ${engagement.engagementTactics.map(tactic => `
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
+                                <span>${tactic.tactic}</span>
+                                <div>
+                                    <span style="color: ${tactic.effectiveness === 'Very High' ? '#10B981' : tactic.effectiveness === 'High' ? '#F59E0B' : '#6B7280'};">
+                                        ${tactic.effectiveness}
+                                    </span>
+                                    <span style="margin-left: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                                        ${tactic.frequency}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Recommendations Tab
+        function renderRecommendationsTab(recommendations) {
+            return `
+                <div>
+                    <h4 style="color: var(--danger-color); margin-bottom: 1rem;">🚨 Immediate Actions</h4>
+                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                        ${recommendations.immediate.map(rec => `
+                            <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid ${rec.priority === 'High' ? '#EF4444' : '#F59E0B'};">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div>
+                                        <strong>${rec.action}</strong>
+                                        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">
+                                            ${rec.reason}
+                                        </div>
+                                        <div style="font-size: 0.85rem; color: var(--primary-teal); margin-top: 0.5rem;">
+                                            How: ${rec.implementation}
+                                        </div>
+                                    </div>
+                                    <span style="background: ${rec.priority === 'High' ? '#EF4444' : '#F59E0B'}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+                                        ${rec.priority}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">📅 Short-term Opportunities</h4>
+                    <div style="display: grid; gap: 0.5rem; margin-bottom: 2rem;">
+                        ${recommendations.shortTerm.map(rec => `
+                            <div style="background: var(--hover-bg); padding: 1rem; border-radius: 8px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <strong>${rec.action}</strong>
+                                        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">
+                                            Timeline: ${rec.timeline}
+                                        </div>
+                                    </div>
+                                    <span style="color: var(--success-color); font-weight: 600;">
+                                        ${rec.expectedImpact}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">💡 Content Ideas to Implement</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${recommendations.contentIdeas.map(idea => `
+                            <span style="background: var(--gradient-teal); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">
+                                ${idea}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Start Live Activity Feed
+        function startLiveActivityFeed(username) {
+            const activities = [
+                { icon: '📸', action: 'Posted new photo', time: 'Just now' },
+                { icon: '❤️', action: 'Engagement spike detected', time: '2 min ago' },
+                { icon: '📈', action: 'Follower growth +125', time: '15 min ago' },
+                { icon: '💬', action: 'Responded to 5 comments', time: '1 hour ago' },
+                { icon: '🎥', action: 'Posted new Reel', time: '3 hours ago' }
+            ];
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
+            activities.forEach(activity => {
+                html += `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: white; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <span style="font-size: 1.5rem;">${activity.icon}</span>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">@${username.replace('@', '')}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">${activity.action}</div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-light);">${activity.time}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            document.getElementById('competitorActivity').innerHTML = html;
         }
 
         // Generate AI Suggestions
@@ -1649,6 +2281,207 @@ METRICS TO BEAT:
                 return (num / 1000).toFixed(1) + 'K';
             }
             return num.toString();
+        }
+
+        // Fetch Google Trends Data
+        async function fetchGoogleTrends() {
+            const category = document.getElementById('trendCategory').value;
+            const geo = document.getElementById('trendGeo').value;
+            const timeframe = document.getElementById('trendTime').value;
+            
+            // Show loading state
+            document.getElementById('trendingTopics').innerHTML = '<div class="spinner active"></div>';
+            document.getElementById('risingSearches').innerHTML = '<div class="spinner active"></div>';
+            document.getElementById('relatedQueries').innerHTML = '<div class="spinner active"></div>';
+            document.getElementById('seasonalTrends').innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? '/api/google-trends' 
+                    : '/.netlify/functions/google-trends';
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        geo: geo,
+                        timeframe: timeframe
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    displayTrendingTopics(result.data.trendingTopics);
+                    displayRisingSearches(result.data.risingSearches);
+                    displayRelatedQueries(result.data.relatedQueries);
+                    displaySeasonalTrends(result.data.seasonalTrends);
+                    
+                    // Auto-refresh every 30 seconds for real-time updates
+                    setTimeout(() => {
+                        if (document.getElementById('trends').classList.contains('active')) {
+                            fetchGoogleTrends();
+                        }
+                    }, 30000);
+                }
+            } catch (error) {
+                console.error('Error fetching trends:', error);
+                document.getElementById('trendingTopics').innerHTML = '<p style="color: var(--danger-color);">Error loading trends</p>';
+            }
+        }
+
+        // Display Trending Topics
+        function displayTrendingTopics(topics) {
+            if (!topics || topics.length === 0) return;
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
+            topics.slice(0, 6).forEach((topic, index) => {
+                const sparkline = topic.spark ? createSparkline(topic.spark) : '';
+                html += `
+                    <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--hover-bg); border-radius: 8px; transition: all 0.3s; cursor: pointer;"
+                         onmouseover="this.style.background='rgba(74, 155, 158, 0.15)'"
+                         onmouseout="this.style.background='var(--hover-bg)'">
+                        <span style="font-weight: 700; color: var(--primary-teal); font-size: 1.2rem; width: 25px;">${index + 1}</span>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--text-dark);">${topic.topic}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">Interest: ${topic.interest}/100</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--success-color); font-weight: 600; font-size: 0.9rem;">${topic.change}</div>
+                            ${sparkline}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('trendingTopics').innerHTML = html;
+        }
+
+        // Display Rising Searches
+        function displayRisingSearches(searches) {
+            if (!searches || searches.length === 0) return;
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
+            searches.forEach(search => {
+                const growthColor = search.growth === 'Breakout' ? '#EF4444' : '#10B981';
+                html += `
+                    <div style="padding: 0.5rem; border-left: 3px solid ${growthColor}; background: var(--hover-bg);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 500; color: var(--text-dark);">${search.term}</span>
+                            <span style="background: ${growthColor}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+                                ${search.growth}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
+                            Search volume: ${search.volume}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('risingSearches').innerHTML = html;
+        }
+
+        // Display Related Queries
+        function displayRelatedQueries(queries) {
+            if (!queries || queries.length === 0) return;
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">';
+            queries.forEach(query => {
+                html += `
+                    <span style="background: var(--gradient-teal); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;"
+                          onmouseover="this.style.transform='scale(1.05)'"
+                          onmouseout="this.style.transform='scale(1)'"
+                          onclick="navigator.clipboard.writeText('${query}'); alert('Copied: ${query}')">
+                        ${query}
+                    </span>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('relatedQueries').innerHTML = html;
+        }
+
+        // Display Seasonal Trends
+        function displaySeasonalTrends(seasonal) {
+            if (!seasonal) return;
+            
+            let html = `
+                <div style="background: linear-gradient(135deg, rgba(74, 155, 158, 0.05), rgba(58, 139, 142, 0.05)); padding: 1rem; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="font-size: 1.5rem;">🌟</span>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-dark); text-transform: capitalize;">
+                                ${seasonal.currentSeason} Season
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">Peak: ${seasonal.peak}</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-weight: 600; color: var(--primary-teal); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                            Current Opportunities:
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${seasonal.topics.map(topic => 
+                                `<span style="background: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; border: 1px solid var(--border-color);">
+                                    ${topic}
+                                </span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: var(--primary-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                            Prepare for Next Season:
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${seasonal.upcomingTrends.map(trend => 
+                                `<span style="background: var(--hover-bg); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">
+                                    ${trend}
+                                </span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <p style="font-size: 0.85rem; color: var(--text-light); font-style: italic;">
+                            💡 ${seasonal.opportunity}
+                        </p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('seasonalTrends').innerHTML = html;
+        }
+
+        // Create Sparkline Chart
+        function createSparkline(data) {
+            if (!data || data.length === 0) return '';
+            
+            const width = 60;
+            const height = 20;
+            const max = Math.max(...data);
+            const min = Math.min(...data);
+            const range = max - min || 1;
+            
+            const points = data.map((value, index) => {
+                const x = (index / (data.length - 1)) * width;
+                const y = height - ((value - min) / range) * height;
+                return `${x},${y}`;
+            }).join(' ');
+            
+            return `
+                <svg width="${width}" height="${height}" style="display: block; margin-top: 0.25rem;">
+                    <polyline points="${points}" 
+                              fill="none" 
+                              stroke="var(--primary-teal)" 
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                </svg>
+            `;
         }
 
         // Mobile Menu Toggle
