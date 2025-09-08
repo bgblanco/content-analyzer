@@ -2229,34 +2229,206 @@ METRICS TO BEAT:
             document.getElementById('competitorActivity').innerHTML = html;
         }
 
-        // Generate AI Suggestions
-        function generateAISuggestions() {
-            const goal = document.getElementById('goalInput').value;
+        // Generate AI Suggestions with real AI
+        async function generateAISuggestions() {
+            const goal = document.getElementById('goalInput').value.trim();
             if (!goal) {
-                alert('Please describe your goal');
+                alert('Please describe your goal or content idea');
                 return;
             }
             
-            // Simulate AI suggestions
-            const suggestions = [
-                {
-                    id: Date.now(),
-                    text: `Based on your goal: "${goal.substring(0, 50)}..." - Try this angle...`,
-                    likes: 0,
-                    retweets: 0,
-                    engagementRate: 0,
-                    whyViral: 'AI-optimized for your specific audience and goals',
-                    shootIdeas: ['AI-optimized shot list for your goals', 'Audience-targeted visual strategies', 'Brand-aligned creative direction'],
-                    prIdeas: ['Tailored media strategy', 'Audience-specific channels', 'Custom hashtag recommendations']
-                }
-            ];
+            // Show loading state
+            const grid = document.getElementById('aiResults');
+            grid.innerHTML = '<div class="spinner active" style="margin: 2rem auto;"></div>';
             
+            try {
+                // Get API keys from localStorage
+                const apiKeys = {
+                    openai: localStorage.getItem('openai_api_key'),
+                    claude: localStorage.getItem('claude_api_key'),
+                    gemini: localStorage.getItem('gemini_api_key'),
+                    grok: localStorage.getItem('grok_api_key')
+                };
+                
+                // Get selected provider or use auto
+                const provider = localStorage.getItem('selectedProvider') || 'auto';
+                
+                // Get current niche/context if available
+                const context = {
+                    niche: document.getElementById('nicheInput')?.value || '',
+                    platform: document.getElementById('platformSelect')?.value || 'all'
+                };
+                
+                // Call AI suggestions endpoint
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? '/api/ai-suggestions' 
+                    : '/.netlify/functions/ai-suggestions';
+                    
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        goal: goal,
+                        apiKeys: apiKeys,
+                        provider: provider,
+                        context: context
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate suggestions');
+                }
+                
+                if (data.success && data.suggestions) {
+                    displayAISuggestions(data.suggestions);
+                } else {
+                    throw new Error('No suggestions generated');
+                }
+                
+            } catch (error) {
+                console.error('Error generating AI suggestions:', error);
+                
+                // Check if it's an API key error
+                if (error.message.includes('API key') || error.message.includes('No AI provider')) {
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--danger-color);">
+                            <h3>⚠️ API Key Required</h3>
+                            <p style="margin: 1rem 0;">Please add your AI API key to generate suggestions.</p>
+                            <button onclick="showAPIModal()" style="padding: 0.75rem 1.5rem; background: var(--primary-teal); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                Add API Key
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--danger-color);">
+                            <h3>Error Generating Suggestions</h3>
+                            <p>${error.message}</p>
+                            <button onclick="generateAISuggestions()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary-teal); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                Try Again
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Display AI-generated suggestions
+        function displayAISuggestions(suggestions) {
             const grid = document.getElementById('aiResults');
             grid.innerHTML = '';
+            
             suggestions.forEach(suggestion => {
-                const card = createResultCard(suggestion);
+                const card = document.createElement('div');
+                card.className = 'result-card fade-in';
+                card.style.opacity = '0';
+                
+                card.innerHTML = `
+                    <div style="padding: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="color: var(--primary-teal); margin: 0; flex: 1;">
+                                ${suggestion.title}
+                            </h3>
+                            <span style="background: var(--gradient-teal); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">
+                                ${suggestion.platform}
+                            </span>
+                        </div>
+                        
+                        <p style="color: var(--text-dark); margin-bottom: 1rem;">
+                            ${suggestion.description}
+                        </p>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <span style="background: var(--hover-bg); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                                📹 ${suggestion.contentType}
+                            </span>
+                            <span style="background: var(--hover-bg); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                                👁️ ${suggestion.expectedMetrics?.views || '50K-100K'}
+                            </span>
+                            <span style="background: var(--hover-bg); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                                💬 ${suggestion.expectedMetrics?.engagement || '8-12%'}
+                            </span>
+                        </div>
+                        
+                        <details style="margin-bottom: 1rem;">
+                            <summary style="cursor: pointer; color: var(--primary-teal); font-weight: 600;">
+                                📸 Shot Ideas & Techniques
+                            </summary>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                                ${suggestion.shootIdeas.map(idea => `<li style="margin: 0.25rem 0;">${idea}</li>`).join('')}
+                            </ul>
+                        </details>
+                        
+                        <details style="margin-bottom: 1rem;">
+                            <summary style="cursor: pointer; color: var(--primary-teal); font-weight: 600;">
+                                📢 PR & Marketing Strategy
+                            </summary>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                                ${suggestion.prStrategy.map(strategy => `<li style="margin: 0.25rem 0;">${strategy}</li>`).join('')}
+                            </ul>
+                        </details>
+                        
+                        <details style="margin-bottom: 1rem;">
+                            <summary style="cursor: pointer; color: var(--primary-teal); font-weight: 600;">
+                                🔥 Why This Will Go Viral
+                            </summary>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                                ${suggestion.viralFactors.map(factor => `<li style="margin: 0.25rem 0;">${factor}</li>`).join('')}
+                            </ul>
+                        </details>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong style="color: var(--primary-teal);">Hashtags:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                ${suggestion.hashtags.map(tag => `
+                                    <span style="background: var(--gradient-teal); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.85rem; cursor: pointer;"
+                                          onclick="navigator.clipboard.writeText('${tag}'); alert('Copied: ${tag}')">
+                                        ${tag}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="padding: 1rem; background: var(--hover-bg); border-radius: 8px; margin-bottom: 1rem;">
+                            <strong>💡 Call to Action:</strong> ${suggestion.callToAction}
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="saveIdea(${suggestion.id})" class="action-btn save">
+                                💾 Save Idea
+                            </button>
+                            <button onclick="exportShootPlan(${suggestion.id})" class="action-btn">
+                                📋 Export Plan
+                            </button>
+                            <button onclick="navigator.clipboard.writeText(\`${suggestion.title}\\n${suggestion.description}\`); alert('Copied to clipboard!')" class="action-btn">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
                 grid.appendChild(card);
+                
+                // Animate in
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                }, 100);
             });
+            
+            // Add regenerate button at the end
+            const regenerateBtn = document.createElement('div');
+            regenerateBtn.style.textAlign = 'center';
+            regenerateBtn.style.marginTop = '2rem';
+            regenerateBtn.innerHTML = `
+                <button onclick="generateAISuggestions()" style="padding: 0.75rem 2rem; background: var(--primary-teal); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    🔄 Generate More Ideas
+                </button>
+            `;
+            grid.appendChild(regenerateBtn);
         }
 
         // Update Stats

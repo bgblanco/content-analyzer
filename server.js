@@ -14,6 +14,7 @@ app.use(express.static('.'));
 const { getViralContent } = require('./data/viral-content');
 const { getTrendingTopics } = require('./data/trending-topics');
 const { getCompetitorData } = require('./data/competitor-data');
+const { AIContentGenerator } = require('./data/ai-generator');
 
 // API Routes
 app.post('/api/fetch-viral', async (req, res) => {
@@ -102,6 +103,62 @@ app.post('/api/analyze', async (req, res) => {
   } catch (error) {
     console.error('Error analyzing content:', error);
     res.status(500).json({ error: 'Failed to analyze content' });
+  }
+});
+
+// AI Suggestions endpoint
+app.post('/api/ai-suggestions', async (req, res) => {
+  try {
+    const { goal, apiKeys, provider, context } = req.body;
+    
+    if (!goal || goal.trim().length === 0) {
+      return res.status(400).json({ 
+        error: 'Please provide a goal or description for content generation' 
+      });
+    }
+    
+    // Initialize AI generator with provided API keys
+    const generator = new AIContentGenerator();
+    
+    // Use environment variables if no keys provided
+    const keys = apiKeys || {
+      openai: process.env.OPENAI_API_KEY,
+      claude: process.env.ANTHROPIC_API_KEY,
+      gemini: process.env.GOOGLE_API_KEY,
+      grok: process.env.GROK_API_KEY
+    };
+    
+    await generator.initialize(keys);
+    
+    // Generate suggestions
+    const suggestions = await generator.generateSuggestions(
+      goal,
+      provider || 'auto',
+      context || {}
+    );
+    
+    res.json({
+      success: true,
+      goal: goal,
+      provider: provider || 'auto',
+      count: suggestions.length,
+      suggestions: suggestions
+    });
+    
+  } catch (error) {
+    console.error('Error generating AI suggestions:', error);
+    
+    // Send appropriate error message
+    if (error.message.includes('No AI provider configured')) {
+      res.status(400).json({ 
+        error: 'No AI API keys configured. Please add your OpenAI, Claude, or Gemini API key in settings.',
+        requiresApiKey: true
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Failed to generate suggestions: ' + error.message 
+      });
+    }
   }
 });
 
