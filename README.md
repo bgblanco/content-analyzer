@@ -1,259 +1,155 @@
-# Content Analyzer - Viral Content Analysis & Shoot Planning Tool
+# Content Analyzer Production Setup Guide
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR-BADGE-ID/deploy-status)](https://app.netlify.com/sites/content-analyzer/deploys)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+## Current Status
 
-A comprehensive social media content analysis platform that helps businesses and content creators identify viral content patterns, generate photography shoot ideas, and develop PR strategies.
+The application has been upgraded with the following features:
+- ✅ Apify integration structure (requires configuration)
+- ✅ Enhanced AI suggestions with detailed prompts
+- ✅ Animations library with real Lottie files
+- ✅ Error handling and demo mode
+- ⚠️ Apify actors need proper IDs/permissions
+- ⚠️ AI providers need API keys
 
-![Content Analyzer](assets/screenshot.png)
+## Required Setup
 
-## 🚀 Features
+### 1. Apify Configuration
 
-### Multi-Platform Content Analysis
-- **YouTube** - Analyze viral videos and trends
-- **TikTok** - Discover trending content and challenges
-- **Instagram** - Track popular posts and reels (coming soon)
-- **LinkedIn** - Monitor professional content engagement (coming soon)
-- **Multi-Platform Support** - Aggregate content from all major platforms
+Your current Apify token appears to have permission issues. You need to:
 
-### AI-Powered Analysis
-- **Multiple AI Providers**: OpenAI, Anthropic Claude, Google Gemini, xAI Grok
-- **Viral Pattern Detection**: Understand why content goes viral
-- **Shoot Recommendations**: Detailed photography and videography suggestions
-- **PR Strategy Generation**: Step-by-step campaign outlines
+#### Option A: Use Free Apify Actors
+1. Go to [Apify Store](https://apify.com/store)
+2. Find free actors for:
+   - TikTok: Search for "TikTok Scraper" 
+   - Instagram: Search for "Instagram Scraper"
+   - YouTube: Search for "YouTube Scraper"
+3. Get the actor IDs (format: `username~actor-name`)
+4. Update `netlify/functions/fetch-viral.js` with correct actor IDs
 
-### Enhanced Features
-- **Lottie Animations**: Visual previews of shoot techniques
-- **Response Enhancement**: Detailed technical specifications for shoots
-- **Export Functionality**: Download shoot plans and PR strategies
-- **Save & Organize**: Build your content inspiration library
+#### Option B: Create Your Own Actors
+1. Build custom actors on Apify platform
+2. Use your actor IDs in the configuration
+3. Ensure your token has permissions for these actors
 
-## 📦 Installation
+#### Option C: Upgrade Apify Plan
+1. Check if your current plan supports the actors you're trying to use
+2. Consider upgrading for more API calls and actor access
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Netlify CLI (optional, for local development)
+### 2. Environment Variables
 
-### Quick Start
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/bgblanco/content-analyzer.git
-cd content-analyzer
-```
-
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Set up environment variables**
-```bash
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-4. **Run locally**
-```bash
-npm start
-# or
-netlify dev
-```
-
-The app will be available at `http://localhost:8888`
-
-## 🔑 API Configuration
-
-### Required API Keys
-
-#### Social Media Platforms
-- **YouTube**: [Get API Key](https://developers.google.com/youtube/v3/getting-started)
-- **TikTok**: [RapidAPI Key](https://rapidapi.com/tikapi-tikapi-default/api/tiktok-api6)
-- **Instagram**: [Graph API Access](https://developers.facebook.com/docs/instagram-api)
-- **LinkedIn**: [Developer Access](https://www.linkedin.com/developers/)
-
-#### AI Providers
-- **OpenAI**: [API Keys](https://platform.openai.com/api-keys)
-- **Anthropic**: [Console](https://console.anthropic.com/)
-- **Google Gemini**: [AI Studio](https://makersuite.google.com/app/apikey)
-- **xAI Grok**: [Developer Portal](https://x.ai/api)
-
-### Setting Environment Variables
-
-#### Local Development
-Create a `.env` file in the root directory:
+Create a `.env` file with:
 ```env
-YOUTUBE_API_KEY=your_youtube_api_key
-OPENAI_API_KEY=your_openai_api_key
-# Add other keys as needed
+# Apify (Required for real viral content)
+APIFY_TOKEN=your_token_here
+
+# Optional: Specific task IDs for better performance
+APIFY_TIKTOK_TASK_ID=your_task_id
+APIFY_INSTAGRAM_TASK_ID=your_task_id  
+APIFY_YOUTUBE_TASK_ID=your_task_id
+
+# AI Providers (At least one required)
+OPENAI_API_KEY=your_key
+ANTHROPIC_API_KEY=your_key
+GOOGLE_API_KEY=your_key  # For Gemini
+GROK_API_KEY=your_key
 ```
 
-#### Netlify Production
-1. Go to your Netlify dashboard
-2. Navigate to Site Settings → Environment Variables
-3. Add each API key as a new variable
-4. Redeploy your site
+### 3. Netlify Deployment
 
-## 🚀 Deployment
+Set environment variables in Netlify dashboard:
+1. Go to Site Settings > Environment Variables
+2. Add all the keys from `.env`
+3. Deploy the site
 
-### Deploy to Netlify
+## Known Issues & Solutions
 
-#### Option 1: One-Click Deploy
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/bgblanco/content-analyzer)
+### Issue 1: Apify "insufficient-permissions" Error
+**Cause**: Token doesn't have access to the specified actors
+**Solution**: 
+- Use free/public actors instead
+- Create your own actors
+- Upgrade Apify plan
 
-#### Option 2: Manual Deploy
-1. Fork this repository
-2. Connect to Netlify:
-   - Log in to [Netlify](https://app.netlify.com)
-   - Click "New site from Git"
-   - Choose your forked repository
-   - Configure build settings (automatic)
-   - Add environment variables
-   - Deploy!
+### Issue 2: AI Suggestions "Unexpected token '<'" Error  
+**Cause**: API endpoint returning HTML instead of JSON
+**Solution**: 
+- Ensure Netlify functions are deployed
+- Check that AI API keys are configured
+- Verify endpoint URLs are correct
 
-#### Option 3: CLI Deploy
+### Issue 3: Generic Content Instead of Real Data
+**Cause**: Apify integration failing, falling back to demo
+**Solution**: 
+- Configure proper Apify actors
+- The app now shows "[DEMO]" tag when using fallback data
+
+## How to Enable Real Apify Integration
+
+1. **Find Working Actors**:
+   ```javascript
+   // In netlify/functions/fetch-viral.js
+   const platformConfig = {
+     tiktok: {
+       actorId: 'clockworks~tiktok-scraper', // Replace with working actor
+       // ...
+     }
+   }
+   ```
+
+2. **Test with Apify Console**:
+   - Go to https://console.apify.com
+   - Test your token with different actors
+   - Find actors that work with your plan
+
+3. **Update Configuration**:
+   - Use actor IDs that work with your token
+   - Or create custom tasks and use task IDs
+
+## Running Locally
+
 ```bash
-# Install Netlify CLI
-npm install -g netlify-cli
+# Install dependencies
+npm install
 
-# Login to Netlify
-netlify login
+# Create .env file with your keys
+cp .env.example .env
+# Edit .env with your actual keys
 
-# Deploy
-netlify deploy --prod
+# Run with Netlify Dev
+npm run netlify-dev
+
+# Access at http://localhost:8888
 ```
 
-### Custom Domain
-1. In Netlify dashboard, go to Domain Settings
-2. Add your custom domain
-3. Configure DNS settings
-4. Enable HTTPS (automatic)
+## Demo Mode
 
-## 📁 Project Structure
+Currently, the app runs in demo mode:
+- Shows sample viral content with "[DEMO]" tags
+- Animations work with real Lottie files
+- AI suggestions require at least one AI API key
 
-```
-content-analyzer/
-├── index.html              # Main application HTML
-├── css/
-│   └── styles.css         # Enhanced styling
-├── js/
-│   ├── app.js            # Main application logic
-│   └── enhancer.js       # Response enhancement engine
-├── netlify/
-│   └── functions/
-│       ├── fetch-viral.js # Viral content fetching
-│       └── analyze.js     # AI analysis endpoint
-├── assets/
-│   ├── animations/       # Lottie animation files
-│   └── placeholder.svg   # Fallback images
-├── package.json          # Dependencies
-├── netlify.toml          # Netlify configuration
-├── .env.example          # Environment template
-└── README.md            # Documentation
-```
+## Next Steps
 
-## 🎯 Usage Guide
+1. **Configure Apify Properly**:
+   - Find actors compatible with your token
+   - Or upgrade to a plan that supports needed actors
 
-### Basic Workflow
+2. **Add AI API Keys**:
+   - Get at least one AI provider key
+   - OpenAI is recommended for best results
 
-1. **Enter Your Niche**
-   - Type your industry or content topic
-   - Select platform (YouTube, TikTok, etc.)
-   - Choose time range and filters
+3. **Test Each Feature**:
+   - Viral Explorer: Should show real data when Apify works
+   - AI Suggestions: Needs AI API keys
+   - Animations: Should work immediately
 
-2. **Analyze Content**
-   - Click "Analyze Viral Content"
-   - Wait for AI analysis
-   - Review results
+## Support
 
-3. **Review Insights**
-   - **Why It's Viral**: Understand viral factors
-   - **Shoot Ideas**: Get 5 detailed shoot concepts
-   - **PR Strategy**: Follow step-by-step campaign
+For Apify issues:
+- Check actor documentation
+- Verify token permissions
+- Consider using Apify's support
 
-4. **Export & Save**
-   - Save ideas to your library
-   - Export shoot plans as text files
-   - Share with your team
-
-### Advanced Features
-
-#### AI Provider Selection
-Choose your preferred AI provider in settings:
-- OpenAI GPT-4 (recommended for quality)
-- Anthropic Claude (best for creative ideas)
-- Google Gemini (fast and efficient)
-- xAI Grok (good for trending topics)
-
-#### Animation Previews
-Click "Preview Animation" on shoot ideas to see:
-- Professional camera movements
-- Composition techniques
-- Lighting setups
-
-## 🛠 Development
-
-### Local Development
-```bash
-# Start development server
-npm start
-
-# Run with Netlify CLI
-netlify dev
-
-# Build for production
-npm run build
-```
-
-### Adding New Features
-
-#### Add a New Social Platform
-1. Create fetcher in `netlify/functions/fetch-viral.js`
-2. Add platform option in HTML
-3. Update `fetchViralContent()` in `app.js`
-
-#### Add a New AI Provider
-1. Add integration in `netlify/functions/analyze.js`
-2. Update provider selector in UI
-3. Add API key to environment variables
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Lottie](https://lottiefiles.com/) for animations
-- [Netlify](https://www.netlify.com/) for hosting
-- All API providers for their services
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/bgblanco/content-analyzer/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/bgblanco/content-analyzer/discussions)
-- **Email**: support@sentinelpeaksolutions.com
-
-## 🗺 Roadmap
-
-- [ ] Instagram Reels integration
-- [ ] LinkedIn native API
-- [ ] Batch analysis mode
-- [ ] Team collaboration features
-- [ ] Analytics dashboard
-- [ ] Chrome extension
-- [ ] Mobile app
-
----
-
-Built with ❤️ by [Sentinel Peak Solutions](https://sentinelpeaksolutions.com)
+For deployment issues:
+- Check Netlify function logs
+- Verify environment variables
+- Ensure all dependencies are installed

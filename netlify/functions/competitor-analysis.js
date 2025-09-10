@@ -240,7 +240,7 @@ async function analyzeEngagement(username) {
       improvement: 'Consider faster response during peak hours'
     },
     communityManagement: {
-      repliesTo Comments: '78%',
+      repliesToComments: '78%',
       userMentions: 'Responds to 90% within 24 hours',
       userGeneratedContent: 'Regularly features UGC (2-3 times/week)'
     },

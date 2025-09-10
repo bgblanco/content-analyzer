@@ -1,6 +1,7 @@
 const OpenAI = require('openai');
 const Anthropic = require('@anthropic-ai/sdk');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 exports.handler = async (event) => {
   // Only allow POST requests
@@ -12,7 +13,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { goal, apiKeys, provider, context } = JSON.parse(event.body);
+    const { goal, apiKeys, provider, context, selectedPosts } = JSON.parse(event.body);
     
     if (!goal || goal.trim().length === 0) {
       return {
@@ -37,25 +38,35 @@ exports.handler = async (event) => {
     
     if (selectedProvider === 'auto' || selectedProvider === 'openai') {
       if (keys.openai) {
-        suggestions = await generateWithOpenAI(goal, context, keys.openai);
+        suggestions = await generateWithOpenAI(goal, context, selectedPosts, keys.openai);
       }
     }
     
     if (!suggestions && (selectedProvider === 'auto' || selectedProvider === 'claude')) {
       if (keys.claude) {
-        suggestions = await generateWithClaude(goal, context, keys.claude);
+        suggestions = await generateWithClaude(goal, context, selectedPosts, keys.claude);
       }
     }
     
     if (!suggestions && (selectedProvider === 'auto' || selectedProvider === 'gemini')) {
       if (keys.gemini) {
-        suggestions = await generateWithGemini(goal, context, keys.gemini);
+        suggestions = await generateWithGemini(goal, context, selectedPosts, keys.gemini);
+      }
+    }
+    
+    if (!suggestions && (selectedProvider === 'auto' || selectedProvider === 'grok')) {
+      if (keys.grok) {
+        suggestions = await generateWithGrok(goal, context, selectedPosts, keys.grok);
       }
     }
     
     if (!suggestions) {
-      // No API keys available, return fallback suggestions
-      suggestions = getFallbackSuggestions(goal);
+      return {
+        statusCode: 503,
+        body: JSON.stringify({ 
+          error: 'No AI providers available. Please configure at least one API key.' 
+        }),
+      };
     }
     
     return {
@@ -85,17 +96,17 @@ exports.handler = async (event) => {
 };
 
 // Generate with OpenAI
-async function generateWithOpenAI(goal, context, apiKey) {
+async function generateWithOpenAI(goal, context, selectedPosts, apiKey) {
   const openai = new OpenAI({ apiKey });
   
-  const prompt = buildPrompt(goal, context);
+  const prompt = buildDetailedPrompt(goal, context, selectedPosts);
   
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
         role: 'system',
-        content: 'You are an expert viral content strategist. Generate creative, trending content ideas that will drive engagement. Respond with a JSON array only.'
+        content: 'You are an expert content strategist, photographer, and PR specialist. Generate highly specific, actionable content ideas with concrete technical specifications. Be extremely detailed about camera settings, lighting setups, and PR strategies. Respond with a JSON array only.'
       },
       {
         role: 'user',
@@ -103,26 +114,26 @@ async function generateWithOpenAI(goal, context, apiKey) {
       }
     ],
     temperature: 0.8,
-    max_tokens: 3000
+    max_tokens: 4000
   });
   
   return parseAIResponse(response.choices[0].message.content);
 }
 
 // Generate with Claude
-async function generateWithClaude(goal, context, apiKey) {
+async function generateWithClaude(goal, context, selectedPosts, apiKey) {
   const anthropic = new Anthropic({ apiKey });
   
-  const prompt = buildPrompt(goal, context);
+  const prompt = buildDetailedPrompt(goal, context, selectedPosts);
   
   const response = await anthropic.messages.create({
     model: 'claude-3-haiku-20240307',
-    max_tokens: 3000,
+    max_tokens: 4000,
     temperature: 0.8,
     messages: [
       {
         role: 'user',
-        content: prompt + '\n\nRespond with a JSON array only.'
+        content: prompt + '\n\nYou are an expert content strategist, photographer, and PR specialist. Respond with a JSON array only, with highly specific technical details.'
       }
     ]
   });
@@ -131,37 +142,126 @@ async function generateWithClaude(goal, context, apiKey) {
 }
 
 // Generate with Gemini
-async function generateWithGemini(goal, context, apiKey) {
+async function generateWithGemini(goal, context, selectedPosts, apiKey) {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
   
-  const prompt = buildPrompt(goal, context);
+  const prompt = buildDetailedPrompt(goal, context, selectedPosts);
   const result = await model.generateContent(prompt + '\n\nRespond with a JSON array only.');
   const response = await result.response;
   
   return parseAIResponse(response.text());
 }
 
-// Build the prompt
-function buildPrompt(goal, context) {
-  return `Generate 5 unique, creative content ideas based on this goal: "${goal}"
+// Generate with Grok
+async function generateWithGrok(goal, context, selectedPosts, apiKey) {
+  // Grok API integration
+  const grokUrl = 'https://api.x.ai/v1/chat/completions';
   
-  ${context?.niche ? `Industry/Niche: ${context.niche}` : ''}
-  ${context?.platform ? `Target Platform: ${context.platform}` : 'Platforms: TikTok, Instagram, YouTube'}
+  const prompt = buildDetailedPrompt(goal, context, selectedPosts);
   
-  For each content idea, provide:
-  1. title: A catchy, viral-worthy title
-  2. description: 2-3 sentences explaining the concept
-  3. platform: Best platform (TikTok, Instagram, YouTube, LinkedIn)
-  4. contentType: video, photo, carousel, reel, story, article
-  5. viralFactors: Array of 3-4 reasons why this will go viral
-  6. shootIdeas: Array of 5 specific photography/videography techniques
-  7. prStrategy: Array of 3 PR amplification strategies
-  8. expectedMetrics: Object with views, engagement, shares
-  9. hashtags: Array of 5-7 relevant hashtags
-  10. callToAction: What action viewers should take
+  const response = await fetch(grokUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'grok-beta',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert content strategist specializing in viral content, photography techniques, and PR strategies. Generate highly specific, actionable content ideas with concrete technical specifications.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.8,
+      max_tokens: 4000
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Grok API error: ${error}`);
+  }
+
+  const data = await response.json();
+  return parseAIResponse(data.choices[0].message.content);
+}
+
+// Build detailed prompt with full context
+function buildDetailedPrompt(goal, context, selectedPosts) {
+  let prompt = `Generate 5 unique, creative content ideas based on this goal: "${goal}"`;
   
-  Format as JSON array. Make each idea unique, actionable, and based on current trends.`;
+  // Add context information
+  if (context) {
+    prompt += `\n\nContext:`;
+    if (context.niche) prompt += `\nIndustry/Niche: ${context.niche}`;
+    if (context.platform) prompt += `\nTarget Platform: ${context.platform}`;
+    if (context.location) prompt += `\nLocation: ${context.location} (consider local trends and Fresno-specific opportunities)`;
+    if (context.audience) prompt += `\nTarget Audience: ${context.audience}`;
+  }
+  
+  // Add selected posts for inspiration (with full context)
+  if (selectedPosts && selectedPosts.length > 0) {
+    prompt += `\n\nAnalyze these viral posts for inspiration and patterns:\n`;
+    
+    selectedPosts.forEach((post, index) => {
+      prompt += `\nPost ${index + 1}:`;
+      prompt += `\n- Title: ${post.title}`;
+      prompt += `\n- Author: ${post.author}`;
+      prompt += `\n- Platform: ${post.platform}`;
+      prompt += `\n- Description: ${post.description || 'N/A'}`;
+      prompt += `\n- Published: ${post.publishedAt}`;
+      prompt += `\n- Metrics: Views: ${post.metrics?.views || 0}, Likes: ${post.metrics?.likes || 0}, Comments: ${post.metrics?.comments || 0}, Shares: ${post.metrics?.shares || 0}`;
+      prompt += `\n- Hashtags: ${post.hashtags?.join(', ') || 'None'}`;
+      prompt += `\n- Content Type: ${post.contentType || 'Unknown'}`;
+      prompt += `\n- Engagement Score: ${post.engagementScore || 0}`;
+    });
+  }
+  
+  prompt += `\n\nFor each content idea, provide EXTREMELY DETAILED specifications:
+
+1. title: A catchy, viral-worthy title
+2. description: 3-4 sentences explaining the concept in detail
+3. platform: Best platform (TikTok, Instagram, YouTube, LinkedIn)
+4. contentType: video, photo, carousel, reel, story, article
+5. viralFactors: Array of 4-5 specific reasons why this will go viral
+6. shootSpecs: Object with:
+   - camera: Specific camera model recommendation
+   - lens: Exact lens focal length and aperture (e.g., "24-70mm f/2.8")
+   - aperture: Specific f-stop (e.g., "f/1.4")
+   - shutterSpeed: Exact shutter speed (e.g., "1/125s")
+   - iso: Specific ISO value (e.g., "ISO 400")
+   - lighting: Detailed lighting setup (e.g., "Key light: Softbox 45° left, Fill: Reflector right, Rim: LED panel behind")
+   - movement: Camera movement technique (e.g., "Dolly zoom", "Handheld with stabilizer", "Slider shot")
+   - colorGrading: Color grading approach (e.g., "Teal and orange, lifted blacks, crushed highlights")
+7. prStrategy: Array of 4-5 SPECIFIC PR tactics including:
+   - Exact media outlets to pitch
+   - Specific influencers to collaborate with
+   - Press release angles
+   - Local Fresno media opportunities if applicable
+   - Event tie-ins or seasonal hooks
+8. expectedMetrics: Object with specific numbers:
+   - views: Range (e.g., "50K-100K")
+   - engagement: Percentage (e.g., "12-15%")
+   - shares: Range (e.g., "500-1500")
+   - conversionRate: Expected conversion (e.g., "3-5%")
+9. hashtags: Array of 7-10 highly specific, researched hashtags
+10. callToAction: Specific CTA with exact wording
+11. productionTimeline: Object with:
+    - preProduction: Days needed
+    - shooting: Hours needed
+    - postProduction: Days needed
+    - totalDays: Total timeline
+12. budget: Estimated production budget range
+
+Format as JSON array. Make each idea unique, actionable, and based on current trends and the analyzed viral posts.`;
+  
+  return prompt;
 }
 
 // Parse AI response
@@ -195,84 +295,42 @@ function parseAIResponse(response) {
       description: item.description || 'AI-generated content suggestion',
       platform: item.platform || 'Instagram',
       contentType: item.contentType || 'video',
-      viralFactors: item.viralFactors || ['Trending topic', 'High engagement', 'Shareable'],
-      shootIdeas: item.shootIdeas || ['Natural lighting', 'Multiple angles', 'B-roll footage'],
-      prStrategy: item.prStrategy || ['Media outreach', 'Press release', 'Influencer partnerships'],
-      expectedMetrics: item.expectedMetrics || { views: '50K-100K', engagement: '8-12%', shares: '500-1000' },
-      hashtags: item.hashtags || ['#viral', '#trending', '#content'],
-      callToAction: item.callToAction || 'Follow for more'
+      viralFactors: item.viralFactors || ['Trending topic', 'High engagement potential', 'Shareable content', 'Algorithm-friendly'],
+      shootSpecs: item.shootSpecs || {
+        camera: 'Canon R5 or Sony A7S III',
+        lens: '24-70mm f/2.8',
+        aperture: 'f/2.8',
+        shutterSpeed: '1/125s',
+        iso: 'ISO 400',
+        lighting: 'Natural light with reflector',
+        movement: 'Handheld with stabilizer',
+        colorGrading: 'Natural with slight warm tone'
+      },
+      prStrategy: item.prStrategy || [
+        'Pitch to TechCrunch and The Verge',
+        'Partner with micro-influencers in niche',
+        'Create press release for PR Newswire',
+        'Submit to Product Hunt',
+        'Local Fresno media outreach'
+      ],
+      expectedMetrics: item.expectedMetrics || { 
+        views: '25K-75K', 
+        engagement: '8-12%', 
+        shares: '500-1500',
+        conversionRate: '2-4%'
+      },
+      hashtags: item.hashtags || ['#viral', '#trending', '#content', '#creative', '#marketing'],
+      callToAction: item.callToAction || 'Follow for more content like this',
+      productionTimeline: item.productionTimeline || {
+        preProduction: 2,
+        shooting: 4,
+        postProduction: 3,
+        totalDays: 5
+      },
+      budget: item.budget || '$500-$2000'
     }));
   } catch (error) {
     console.error('Error parsing AI response:', error);
-    return getFallbackSuggestions();
+    throw new Error('Failed to parse AI response');
   }
-}
-
-// Fallback suggestions
-function getFallbackSuggestions(goal = '') {
-  return [
-    {
-      id: Date.now(),
-      title: 'Behind-the-Scenes Documentary Series',
-      description: `Create an authentic documentary series showing the real work behind ${goal || 'your brand'}. Transparency builds trust and engagement.`,
-      platform: 'YouTube',
-      contentType: 'video',
-      viralFactors: [
-        'Authenticity drives engagement',
-        'Behind-the-scenes content builds trust',
-        'Documentary format keeps viewers watching'
-      ],
-      shootIdeas: [
-        'Use handheld camera for documentary feel',
-        'Capture candid team moments',
-        'Time-lapse of work processes',
-        'Interview-style testimonials',
-        'Show failures and successes'
-      ],
-      prStrategy: [
-        'Pitch to industry publications',
-        'Create episodic press releases',
-        'Partner with industry influencers'
-      ],
-      expectedMetrics: {
-        views: '25K-75K per episode',
-        engagement: '8-10%',
-        shares: '500-1500'
-      },
-      hashtags: ['#behindthescenes', '#documentary', '#authentic', '#process', '#realstory'],
-      callToAction: 'Subscribe to follow the journey'
-    },
-    {
-      id: Date.now() + 1,
-      title: 'User Transformation Challenge',
-      description: `Launch a 30-day transformation challenge related to ${goal || 'your product'}. User-generated content and social proof drive viral growth.`,
-      platform: 'TikTok',
-      contentType: 'video',
-      viralFactors: [
-        'Challenge format encourages participation',
-        'Transformation content performs exceptionally',
-        'User-generated content extends reach',
-        'Community building increases loyalty'
-      ],
-      shootIdeas: [
-        'Before/after split screens',
-        'Daily progress updates',
-        'Participant testimonials',
-        'Montage of transformations',
-        'Live Q&A sessions'
-      ],
-      prStrategy: [
-        'Launch with media announcement',
-        'Weekly progress updates to press',
-        'Feature success stories in outlets'
-      ],
-      expectedMetrics: {
-        views: '100K-500K total',
-        engagement: '12-18%',
-        shares: '2000-5000'
-      },
-      hashtags: ['#30daychallenge', '#transformation', '#beforeafter', '#community', '#results'],
-      callToAction: 'Join the challenge - link in bio!'
-    }
-  ];
 }

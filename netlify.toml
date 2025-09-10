@@ -57,14 +57,14 @@
 
 # Environment variable hints (actual values set in Netlify dashboard)
 [context.production.environment]
-  # Social Media APIs
-  # YOUTUBE_API_KEY = "Set in Netlify dashboard"
-  # TIKTOK_RAPIDAPI_KEY = "Set in Netlify dashboard"
-  # INSTAGRAM_ACCESS_TOKEN = "Set in Netlify dashboard"
-  # LINKEDIN_API_KEY = "Set in Netlify dashboard"
+  # Apify Configuration
+  # APIFY_TOKEN = "Set in Netlify dashboard"
+  # APIFY_TIKTOK_TASK_ID = "Set in Netlify dashboard (optional)"
+  # APIFY_INSTAGRAM_TASK_ID = "Set in Netlify dashboard (optional)"
+  # APIFY_YOUTUBE_TASK_ID = "Set in Netlify dashboard (optional)"
   
   # AI Provider APIs
   # OPENAI_API_KEY = "Set in Netlify dashboard"
   # ANTHROPIC_API_KEY = "Set in Netlify dashboard"
-  # GEMINI_API_KEY = "Set in Netlify dashboard"
+  # GOOGLE_API_KEY = "Set in Netlify dashboard (for Gemini)"
   # GROK_API_KEY = "Set in Netlify dashboard"

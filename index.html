@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentinel Peak Solutions - Content Analyzer | Real-Time Marketing Intelligence</title>
+    <title>Sentinel Peak Solutions - Social Intelligence & Lead Generator | AI-Powered Data Extraction</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/sentinel-peak-logo.png">
@@ -768,6 +768,113 @@
             color: var(--text-light);
             font-size: 0.9rem;
         }
+
+        /* Animation Grid Styles */
+        .animation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .animation-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .animation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-teal);
+        }
+
+        .animation-preview {
+            width: 100%;
+            height: 200px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .animation-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .animation-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .animation-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--hover-bg);
+            color: var(--primary-teal);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--text-dark);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-group label {
+            font-weight: 500;
+        }
+
+        .control-group input[type="range"] {
+            flex: 1;
+            max-width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -786,46 +893,60 @@
             </div>
             <nav class="nav-menu">
                 <div class="nav-section">
-                    <div class="nav-section-title">Analysis</div>
+                    <div class="nav-section-title">Overview</div>
                     <a class="nav-item active" onclick="showSection('dashboard')">
                         <span class="nav-item-icon">📊</span>
                         Dashboard
                     </a>
                 </div>
                 <div class="nav-section">
-                    <div class="nav-section-title">Inspiration</div>
-                    <a class="nav-item" onclick="showSection('explorer')">
-                        <span class="nav-item-icon">🔍</span>
-                        Viral Explorer
+                    <div class="nav-section-title">Social Intelligence</div>
+                    <a class="nav-item" onclick="showSection('instagram-extractor')">
+                        <span class="nav-item-icon">📸</span>
+                        Instagram Extractor
+                        <span class="nav-item-badge">30¢</span>
                     </a>
-                    <a class="nav-item" onclick="showSection('saved')">
-                        <span class="nav-item-icon">💾</span>
-                        Saved Ideas
-                        <span class="nav-item-badge" id="savedCount">0</span>
+                    <a class="nav-item" onclick="showSection('tiktok-extractor')">
+                        <span class="nav-item-icon">🎵</span>
+                        TikTok Extractor
+                        <span class="nav-item-badge">40¢</span>
                     </a>
                 </div>
                 <div class="nav-section">
-                    <div class="nav-section-title">Market Intelligence</div>
-                    <a class="nav-item" onclick="showSection('trends')">
-                        <span class="nav-item-icon">📈</span>
-                        Google Trends
-                        <span class="nav-item-badge" style="background: var(--gradient-teal);">LIVE</span>
+                    <div class="nav-section-title">Business Intelligence</div>
+                    <a class="nav-item" onclick="showSection('lead-generator')">
+                        <span class="nav-item-icon">🗺️</span>
+                        Lead Generator
+                        <span class="nav-item-badge">MAPS</span>
                     </a>
                     <a class="nav-item" onclick="showSection('competitor')">
                         <span class="nav-item-icon">🕵️</span>
-                        Competitor Spy
+                        Competitor Analysis
+                    </a>
+                    <a class="nav-item" onclick="showSection('web-crawler')">
+                        <span class="nav-item-icon">🌐</span>
+                        Website Crawler
+                        <span class="nav-item-badge">NEW</span>
                     </a>
                 </div>
                 <div class="nav-section">
-                    <div class="nav-section-title">Creatives</div>
-                    <a class="nav-item" onclick="showSection('templates')">
-                        <span class="nav-item-icon">📝</span>
-                        Content Templates
-                    </a>
+                    <div class="nav-section-title">Tools</div>
                     <a class="nav-item" onclick="showSection('ai')">
                         <span class="nav-item-icon">🤖</span>
-                        AI Suggestions
-                        <span class="nav-item-badge">NEW</span>
+                        AI Content Ideas
+                    </a>
+                    <a class="nav-item" onclick="showSection('pr-strategy')">
+                        <span class="nav-item-icon">📢</span>
+                        PR Strategy
+                    </a>
+                    <a class="nav-item" onclick="showSection('animations')">
+                        <span class="nav-item-icon">🎬</span>
+                        Animations
+                    </a>
+                    <a class="nav-item" onclick="showSection('saved')">
+                        <span class="nav-item-icon">💾</span>
+                        Saved Data
+                        <span class="nav-item-badge" id="savedCount">0</span>
                     </a>
                 </div>
             </nav>
@@ -839,7 +960,7 @@
                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <input type="text" class="search-input" placeholder="Search viral social media content...">
+                    <input type="text" class="search-input" placeholder="Search social media accounts, businesses, or content...">
                 </div>
                 <button class="top-bar-btn" onclick="exportData()">
                     <span>📥</span>
@@ -860,26 +981,26 @@
                 <!-- Dashboard Section -->
                 <section id="dashboard" class="section active">
                     <div class="dashboard-header">
-                        <h1>Content Analyzer Dashboard</h1>
-                        <p>AI-powered viral content analysis for strategic content creation and PR campaigns</p>
+                        <h1>Social Intelligence & Lead Generator</h1>
+                        <p>AI-powered data extraction from Instagram, TikTok, and Google Maps for business intelligence</p>
                     </div>
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value" id="analyzedCount">0</div>
-                            <div class="stat-label">Posts Analyzed</div>
+                            <div class="stat-value" id="totalExtracted">0</div>
+                            <div class="stat-label">Data Points Extracted</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" id="savedIdeasCount">0</div>
-                            <div class="stat-label">Saved Ideas</div>
+                            <div class="stat-value" id="leadsGenerated">0</div>
+                            <div class="stat-label">Leads Generated</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" id="shootPlansCount">0</div>
-                            <div class="stat-label">Shoot Plans Created</div>
+                            <div class="stat-value" id="creditsRemaining">1000</div>
+                            <div class="stat-label">Credits Available</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" id="engagementAvg">0%</div>
-                            <div class="stat-label">Avg. Engagement Rate</div>
+                            <div class="stat-value" id="extractionRate">$0.30</div>
+                            <div class="stat-label">Avg Cost/Extract</div>
                         </div>
                     </div>
 
@@ -968,6 +1089,289 @@
                         <h3>No results yet</h3>
                         <p>Enter a niche and click "Analyze Viral Content" to get started</p>
                     </div>
+                </section>
+
+                <!-- Instagram Extractor Section -->
+                <section id="instagram-extractor" class="section">
+                    <div class="dashboard-header">
+                        <h1>Instagram Data Extractor</h1>
+                        <p>Extract posts, profiles, hashtags, and engagement metrics from Instagram</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="control-group">
+                            <label class="control-label">Extraction Type</label>
+                            <select class="control-input" id="instagramExtractionType">
+                                <option value="profile">Profile Data</option>
+                                <option value="posts">Recent Posts</option>
+                                <option value="hashtag">Hashtag Posts</option>
+                                <option value="location">Location Posts</option>
+                                <option value="followers">Followers List</option>
+                                <option value="comments">Post Comments</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Username / Hashtag / Location</label>
+                            <input type="text" class="control-input" id="instagramTarget" placeholder="e.g., @username, #hashtag, or location ID">
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Number of Items</label>
+                                <select class="control-input" id="instagramLimit">
+                                    <option value="10">10 items (3 credits)</option>
+                                    <option value="25">25 items (7 credits)</option>
+                                    <option value="50">50 items (15 credits)</option>
+                                    <option value="100">100 items (30 credits)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Include Analytics</label>
+                                <select class="control-input" id="instagramAnalytics">
+                                    <option value="basic">Basic Metrics</option>
+                                    <option value="detailed">Detailed Analytics (+5 credits)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="analyze-btn" onclick="extractInstagramData()">
+                            <span>📸</span> Extract Instagram Data
+                        </button>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(74, 155, 155, 0.1); border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark);">
+                                <strong>Cost:</strong> ~$0.30 per 100 items • <strong>Speed:</strong> ~2-3 items/second
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="instagramResults" class="results-grid" style="margin-top: 2rem;"></div>
+                </section>
+
+                <!-- TikTok Extractor Section -->
+                <section id="tiktok-extractor" class="section">
+                    <div class="dashboard-header">
+                        <h1>TikTok Data Extractor</h1>
+                        <p>Extract videos, profiles, hashtags, and trending content from TikTok</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="control-group">
+                            <label class="control-label">Extraction Type</label>
+                            <select class="control-input" id="tiktokExtractionType">
+                                <option value="profile">Profile Videos</option>
+                                <option value="hashtag">Hashtag Videos</option>
+                                <option value="trending">Trending Videos</option>
+                                <option value="sound">Sound/Music Videos</option>
+                                <option value="comments">Video Comments</option>
+                                <option value="live">Live Streams</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Username / Hashtag / Sound URL</label>
+                            <input type="text" class="control-input" id="tiktokTarget" placeholder="e.g., @username, #challenge, or sound URL">
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Number of Videos</label>
+                                <select class="control-input" id="tiktokLimit">
+                                    <option value="10">10 videos (4 credits)</option>
+                                    <option value="25">25 videos (10 credits)</option>
+                                    <option value="50">50 videos (20 credits)</option>
+                                    <option value="100">100 videos (40 credits)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Sort By</label>
+                                <select class="control-input" id="tiktokSort">
+                                    <option value="latest">Latest</option>
+                                    <option value="popular">Most Popular</option>
+                                    <option value="trending">Trending Now</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="analyze-btn" onclick="extractTikTokData()">
+                            <span>🎵</span> Extract TikTok Data
+                        </button>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(74, 155, 155, 0.1); border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark);">
+                                <strong>Cost:</strong> ~$0.40 per 100 videos • <strong>Speed:</strong> ~5 videos/second
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="tiktokResults" class="results-grid" style="margin-top: 2rem;"></div>
+                </section>
+
+                <!-- Lead Generator Section -->
+                <section id="lead-generator" class="section">
+                    <div class="dashboard-header">
+                        <h1>Google Maps Lead Generator</h1>
+                        <p>Extract business data, contact information, and reviews from Google Maps</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="control-group">
+                            <label class="control-label">Search Query</label>
+                            <input type="text" class="control-input" id="mapsQuery" placeholder="e.g., restaurants in Fresno, CA">
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Location</label>
+                                <input type="text" class="control-input" id="mapsLocation" placeholder="City, State or ZIP">
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Radius</label>
+                                <select class="control-input" id="mapsRadius">
+                                    <option value="1">1 mile</option>
+                                    <option value="5">5 miles</option>
+                                    <option value="10">10 miles</option>
+                                    <option value="25">25 miles</option>
+                                    <option value="50">50 miles</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Number of Businesses</label>
+                                <select class="control-input" id="mapsLimit">
+                                    <option value="20">20 businesses (6 credits)</option>
+                                    <option value="50">50 businesses (15 credits)</option>
+                                    <option value="100">100 businesses (30 credits)</option>
+                                    <option value="200">200 businesses (60 credits)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Data Fields</label>
+                                <select class="control-input" id="mapsFields">
+                                    <option value="basic">Basic (Name, Address, Phone)</option>
+                                    <option value="contact">+ Website & Email (+10 credits)</option>
+                                    <option value="full">+ Reviews & Hours (+20 credits)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">
+                                <input type="checkbox" id="mapsVerified" style="margin-right: 0.5rem;">
+                                Only Verified Businesses
+                            </label>
+                        </div>
+                        
+                        <button class="analyze-btn" onclick="generateLeads()">
+                            <span>🗺️</span> Generate Leads
+                        </button>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(74, 155, 155, 0.1); border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark);">
+                                <strong>Cost:</strong> ~$0.30 per 100 businesses • <strong>Export:</strong> CSV, Excel, JSON
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="leadsResults" class="results-grid" style="margin-top: 2rem;"></div>
+                </section>
+
+                <!-- Website Crawler Section -->
+                <section id="web-crawler" class="section">
+                    <div class="dashboard-header">
+                        <h1>Website Content Crawler</h1>
+                        <p>Extract structured data, content, and metadata from any website</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="control-group">
+                            <label class="control-label">Website URL</label>
+                            <input type="text" class="control-input" id="crawlerUrl" placeholder="https://example.com">
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Crawl Depth</label>
+                                <select class="control-input" id="crawlerDepth">
+                                    <option value="1">Single Page (2 credits)</option>
+                                    <option value="10">10 Pages (5 credits)</option>
+                                    <option value="50">50 Pages (20 credits)</option>
+                                    <option value="100">100 Pages (40 credits)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Data Type</label>
+                                <select class="control-input" id="crawlerType">
+                                    <option value="content">Page Content</option>
+                                    <option value="products">Product Data</option>
+                                    <option value="contacts">Contact Information</option>
+                                    <option value="images">Images & Media</option>
+                                    <option value="all">All Data</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="analyze-btn" onclick="crawlWebsite()">
+                            <span>🌐</span> Start Crawling
+                        </button>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(74, 155, 155, 0.1); border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark);">
+                                <strong>Cost:</strong> ~$0.20 per 100 pages • <strong>Speed:</strong> ~10 pages/second
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="crawlerResults" class="results-grid" style="margin-top: 2rem;"></div>
+                </section>
+
+                <!-- PR Strategy Section -->
+                <section id="pr-strategy" class="section">
+                    <div class="dashboard-header">
+                        <h1>PR Strategy Generator</h1>
+                        <p>AI-powered PR campaigns and media outreach strategies</p>
+                    </div>
+                    
+                    <div class="explorer-controls">
+                        <div class="control-group">
+                            <label class="control-label">Campaign Goal</label>
+                            <textarea class="control-input" id="prGoal" rows="3" placeholder="Describe your PR campaign objectives..."></textarea>
+                        </div>
+                        
+                        <div class="filters-row">
+                            <div class="control-group">
+                                <label class="control-label">Industry</label>
+                                <select class="control-input" id="prIndustry">
+                                    <option value="tech">Technology</option>
+                                    <option value="fashion">Fashion & Beauty</option>
+                                    <option value="food">Food & Beverage</option>
+                                    <option value="health">Health & Wellness</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">Target Audience</label>
+                                <input type="text" class="control-input" id="prAudience" placeholder="e.g., Millennials, B2B executives">
+                            </div>
+                        </div>
+                        
+                        <button class="analyze-btn" onclick="generatePRStrategy()">
+                            <span>📢</span> Generate PR Strategy
+                        </button>
+                    </div>
+                    
+                    <div id="prResults" style="margin-top: 2rem;"></div>
                 </section>
 
                 <!-- Saved Ideas Section -->
@@ -1281,6 +1685,76 @@
 
                     <div class="results-grid" id="aiResults">
                         <!-- AI suggestions will appear here -->
+                    </div>
+                </section>
+
+                <!-- Animations Section -->
+                <section id="animations" class="section">
+                    <div class="section-header">
+                        <h2>Animation Library</h2>
+                        <p>Professional animation presets for your content production</p>
+                    </div>
+
+                    <!-- Animation Controls -->
+                    <div class="card mb-4">
+                        <h3>Search & Filter</h3>
+                        <div class="input-group">
+                            <input type="text" id="animationSearch" placeholder="Search animations (e.g., dolly, pan, zoom)..." class="form-input">
+                            <div class="button-group" style="margin-left: 1rem;">
+                                <button class="btn btn-secondary" onclick="filterAnimations('all')">All</button>
+                                <button class="btn btn-secondary" onclick="filterAnimations('camera')">Camera</button>
+                                <button class="btn btn-secondary" onclick="filterAnimations('text')">Text</button>
+                                <button class="btn btn-secondary" onclick="filterAnimations('transition')">Transitions</button>
+                                <button class="btn btn-secondary" onclick="filterAnimations('effect')">Effects</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Animation Grid -->
+                    <div class="animation-grid" id="animationGrid">
+                        <!-- Animations will be loaded here -->
+                    </div>
+
+                    <!-- Animation Preview Modal -->
+                    <div id="animationModal" class="modal" style="display: none;">
+                        <div class="modal-content" style="max-width: 800px;">
+                            <span class="close" onclick="closeAnimationModal()">&times;</span>
+                            <h3 id="animationTitle">Animation Preview</h3>
+                            
+                            <div class="animation-preview-container">
+                                <div id="lottiePlayer" style="width: 100%; height: 400px; background: #f5f5f5; border-radius: 8px;"></div>
+                            </div>
+
+                            <div class="animation-controls" style="margin-top: 1.5rem;">
+                                <div class="control-group">
+                                    <label>Speed:</label>
+                                    <input type="range" id="animationSpeed" min="0.25" max="2" step="0.25" value="1">
+                                    <span id="speedValue">1x</span>
+                                </div>
+                                <div class="control-group" style="margin-top: 1rem;">
+                                    <label>
+                                        <input type="checkbox" id="animationLoop" checked> Loop
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="animation-info" style="margin-top: 1.5rem;">
+                                <h4>Technical Details</h4>
+                                <div id="animationDetails"></div>
+                            </div>
+
+                            <div class="button-group" style="margin-top: 1.5rem;">
+                                <button class="btn btn-primary" onclick="copyEmbedCode()">
+                                    <span class="btn-icon">📋</span> Copy Embed Code
+                                </button>
+                                <button class="btn btn-secondary" onclick="downloadAnimation()">
+                                    <span class="btn-icon">⬇️</span> Download JSON
+                                </button>
+                                <button class="btn btn-success" onclick="saveToKit()">
+                                    <span class="btn-icon">💾</span> Save to Kit
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -2277,10 +2751,21 @@ METRICS TO BEAT:
                     })
                 });
                 
-                const data = await response.json();
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    // Response is not JSON (likely HTML error page)
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error('API endpoint not available. Please ensure the server is running correctly.');
+                }
                 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to generate suggestions');
+                    throw new Error(data.error || data.message || 'Failed to generate suggestions');
                 }
                 
                 if (data.success && data.suggestions) {
@@ -2675,6 +3160,816 @@ METRICS TO BEAT:
             menuBtn.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 101; background: var(--primary-teal); color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer;';
             menuBtn.onclick = toggleMobileMenu;
             document.body.appendChild(menuBtn);
+        }
+
+        // ============= Animation Library Functions =============
+        
+        // Animation library data
+        const animationLibrary = [
+            {
+                id: 'dolly-zoom',
+                name: 'Dolly Zoom',
+                description: 'Classic vertigo effect - zoom in while pulling back',
+                category: 'camera',
+                tags: ['camera', 'zoom', 'dramatic', 'vertigo'],
+                lottieUrl: 'https://lottie.host/d8e23dc3-9159-4b1e-984f-95c61ff8db76/WKCtNl3qHP.json',
+                specs: {
+                    duration: '3-5 seconds',
+                    difficulty: 'Advanced',
+                    equipment: 'Zoom lens + slider/dolly',
+                    bestFor: 'Dramatic reveals, emotional moments'
+                }
+            },
+            {
+                id: 'pan-shot',
+                name: 'Smooth Pan',
+                description: 'Horizontal camera movement following action',
+                category: 'camera',
+                tags: ['camera', 'pan', 'movement', 'tracking'],
+                lottieUrl: 'https://lottie.host/f1e91baa-65ad-4ac3-8ec1-e43bb7903b9e/xHVVKkBIRu.json',
+                specs: {
+                    duration: '2-4 seconds',
+                    difficulty: 'Beginner',
+                    equipment: 'Tripod with fluid head',
+                    bestFor: 'Landscape reveals, following subjects'
+                }
+            },
+            {
+                id: 'low-key-portrait',
+                name: 'Low-Key Portrait Lighting',
+                description: 'Dramatic lighting with deep shadows',
+                category: 'lighting',
+                tags: ['lighting', 'portrait', 'dramatic', 'moody'],
+                lottieUrl: 'https://lottie.host/ec17a212-2f89-4e83-adcc-8a40d88c5479/NJqNdUcahp.json',
+                specs: {
+                    duration: 'Static',
+                    difficulty: 'Intermediate',
+                    equipment: 'Single key light + reflector',
+                    bestFor: 'Dramatic portraits, product shots'
+                }
+            },
+            {
+                id: 'overhead-product',
+                name: 'Overhead Product Shot',
+                description: 'Top-down flat lay animation',
+                category: 'camera',
+                tags: ['camera', 'overhead', 'product', 'flat-lay'],
+                lottieUrl: 'https://lottie.host/embedded/f78110d4-1651-41f0-bd3d-90470ba30f83/2TKRs3klcG.json',
+                specs: {
+                    duration: '2-3 seconds',
+                    difficulty: 'Beginner',
+                    equipment: 'Overhead rig or boom arm',
+                    bestFor: 'Product showcases, food photography'
+                }
+            },
+            {
+                id: 'kinetic-text',
+                name: 'Kinetic Typography',
+                description: 'Animated text with dynamic movement',
+                category: 'text',
+                tags: ['text', 'typography', 'motion', 'animated'],
+                lottieUrl: 'https://lottie.host/a6e09877-87e5-4df5-a96f-1c93e5e50f6e/2S66vw1LKa.json',
+                specs: {
+                    duration: '1-2 seconds per word',
+                    difficulty: 'Intermediate',
+                    equipment: 'After Effects or similar',
+                    bestFor: 'Title sequences, social media'
+                }
+            },
+            {
+                id: 'slide-transition',
+                name: 'Slide Transition',
+                description: 'Smooth sliding transition between scenes',
+                category: 'transition',
+                tags: ['transition', 'slide', 'smooth', 'seamless'],
+                lottieUrl: 'https://lottie.host/embed/55e95a9e-9bc8-4f87-baaf-e03f48551c01/JvRLjUxJIZ.json',
+                specs: {
+                    duration: '0.5-1 second',
+                    difficulty: 'Beginner',
+                    equipment: 'Any video editor',
+                    bestFor: 'Scene changes, montages'
+                }
+            },
+            {
+                id: 'glitch-effect',
+                name: 'Glitch Effect',
+                description: 'Digital distortion and glitch animation',
+                category: 'effect',
+                tags: ['effect', 'glitch', 'digital', 'distortion'],
+                lottieUrl: 'https://lottie.host/embed/4e1c5e90-87fc-4e50-a5e1-c1fc3fe5c679/lbGnMjyE8q.json',
+                specs: {
+                    duration: '0.2-0.5 seconds',
+                    difficulty: 'Intermediate',
+                    equipment: 'After Effects plugins',
+                    bestFor: 'Tech content, transitions'
+                }
+            },
+            {
+                id: 'bokeh-blur',
+                name: 'Bokeh Background',
+                description: 'Creamy background blur with light orbs',
+                category: 'effect',
+                tags: ['effect', 'bokeh', 'blur', 'depth'],
+                lottieUrl: 'https://lottie.host/embed/094f5bea-5579-4022-9fad-39bb55bc2e3e/kO9MH6t15A.json',
+                specs: {
+                    duration: 'Continuous',
+                    difficulty: 'Beginner',
+                    equipment: 'Fast lens (f/1.4-f/2.8)',
+                    bestFor: 'Portraits, product shots'
+                }
+            }
+        ];
+
+        let currentAnimations = [...animationLibrary];
+        let currentAnimationPlayer = null;
+
+        // Initialize animations when page loads
+        function initAnimations() {
+            loadAnimations();
+            setupAnimationSearch();
+        }
+
+        // Load animations into grid
+        function loadAnimations(animations = animationLibrary) {
+            const grid = document.getElementById('animationGrid');
+            if (!grid) return;
+
+            grid.innerHTML = animations.map(anim => `
+                <div class="animation-card" onclick="previewAnimation('${anim.id}')">
+                    <div class="animation-preview">
+                        <lottie-player 
+                            src="${anim.lottieUrl}" 
+                            background="transparent" 
+                            speed="1" 
+                            style="width: 100%; height: 100%;" 
+                            loop 
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                    <h4>${anim.name}</h4>
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin: 0.5rem 0;">
+                        ${anim.description}
+                    </p>
+                    <div class="animation-tags">
+                        ${anim.tags.map(tag => `<span class="animation-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter animations by category
+        function filterAnimations(category) {
+            if (category === 'all') {
+                currentAnimations = [...animationLibrary];
+            } else {
+                currentAnimations = animationLibrary.filter(anim => 
+                    anim.category === category || anim.tags.includes(category)
+                );
+            }
+            loadAnimations(currentAnimations);
+        }
+
+        // Setup search functionality
+        function setupAnimationSearch() {
+            const searchInput = document.getElementById('animationSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    if (query === '') {
+                        loadAnimations(currentAnimations);
+                    } else {
+                        const filtered = currentAnimations.filter(anim =>
+                            anim.name.toLowerCase().includes(query) ||
+                            anim.description.toLowerCase().includes(query) ||
+                            anim.tags.some(tag => tag.toLowerCase().includes(query))
+                        );
+                        loadAnimations(filtered);
+                    }
+                });
+            }
+        }
+
+        // Preview animation in modal
+        function previewAnimation(animationId) {
+            const animation = animationLibrary.find(a => a.id === animationId);
+            if (!animation) return;
+
+            const modal = document.getElementById('animationModal');
+            const title = document.getElementById('animationTitle');
+            const player = document.getElementById('lottiePlayer');
+            const details = document.getElementById('animationDetails');
+
+            title.textContent = animation.name;
+            
+            // Load animation in player
+            player.innerHTML = `
+                <lottie-player 
+                    id="modalLottiePlayer"
+                    src="${animation.lottieUrl}" 
+                    background="transparent" 
+                    speed="1" 
+                    style="width: 100%; height: 100%;" 
+                    loop 
+                    autoplay>
+                </lottie-player>
+            `;
+
+            // Show technical details
+            details.innerHTML = `
+                <p><strong>Duration:</strong> ${animation.specs.duration}</p>
+                <p><strong>Difficulty:</strong> ${animation.specs.difficulty}</p>
+                <p><strong>Equipment:</strong> ${animation.specs.equipment}</p>
+                <p><strong>Best For:</strong> ${animation.specs.bestFor}</p>
+            `;
+
+            // Setup speed control
+            const speedControl = document.getElementById('animationSpeed');
+            const speedValue = document.getElementById('speedValue');
+            speedControl.value = 1;
+            speedValue.textContent = '1x';
+            
+            speedControl.oninput = function() {
+                const player = document.getElementById('modalLottiePlayer');
+                if (player) {
+                    player.setSpeed(this.value);
+                    speedValue.textContent = this.value + 'x';
+                }
+            };
+
+            // Setup loop control
+            const loopControl = document.getElementById('animationLoop');
+            loopControl.checked = true;
+            loopControl.onchange = function() {
+                const player = document.getElementById('modalLottiePlayer');
+                if (player) {
+                    player.loop = this.checked;
+                }
+            };
+
+            // Store current animation for other functions
+            window.currentPreviewAnimation = animation;
+
+            modal.style.display = 'block';
+        }
+
+        // Close animation modal
+        function closeAnimationModal() {
+            const modal = document.getElementById('animationModal');
+            modal.style.display = 'none';
+        }
+
+        // Copy embed code
+        function copyEmbedCode() {
+            if (!window.currentPreviewAnimation) return;
+            
+            const embedCode = `<lottie-player 
+    src="${window.currentPreviewAnimation.lottieUrl}" 
+    background="transparent" 
+    speed="1" 
+    style="width: 300px; height: 300px;" 
+    loop 
+    autoplay>
+</lottie-player>`;
+            
+            navigator.clipboard.writeText(embedCode).then(() => {
+                alert('Embed code copied to clipboard!');
+            });
+        }
+
+        // Download animation JSON
+        function downloadAnimation() {
+            if (!window.currentPreviewAnimation) return;
+            
+            fetch(window.currentPreviewAnimation.lottieUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${window.currentPreviewAnimation.id}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+        }
+
+        // Save animation to user kit
+        async function saveToKit() {
+            if (!window.currentPreviewAnimation) return;
+            
+            try {
+                const response = await fetch('/api/save-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: 'animation',
+                        data: window.currentPreviewAnimation
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Animation saved to your kit!');
+                    // Update saved count if element exists
+                    const savedCount = document.getElementById('savedAnimationsCount');
+                    if (savedCount) {
+                        const current = parseInt(savedCount.textContent) || 0;
+                        savedCount.textContent = current + 1;
+                    }
+                } else {
+                    alert('Failed to save animation. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving animation:', error);
+                alert('Error saving animation. Please check your connection.');
+            }
+        }
+
+        // Initialize animations when section is shown
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if animations section exists
+            const animSection = document.getElementById('animations');
+            if (animSection) {
+                // Initialize when section becomes visible
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.target.classList.contains('active')) {
+                            initAnimations();
+                        }
+                    });
+                });
+                
+                observer.observe(animSection, { attributes: true, attributeFilter: ['class'] });
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('animationModal');
+            if (event.target == modal) {
+                closeAnimationModal();
+            }
+        }
+
+        // Instagram Extractor Functions
+        async function extractInstagramData() {
+            const type = document.getElementById('instagramExtractionType').value;
+            const target = document.getElementById('instagramTarget').value;
+            const limit = document.getElementById('instagramLimit').value;
+            const analytics = document.getElementById('instagramAnalytics').value;
+            
+            if (!target) {
+                alert('Please enter a username, hashtag, or location');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('instagramResults');
+            resultsDiv.innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const response = await fetch('/.netlify/functions/instagram-extractor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type,
+                        target,
+                        limit: parseInt(limit),
+                        analytics,
+                        apifyToken: localStorage.getItem('apifyToken') || ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayInstagramResults(data.results);
+                    updateCreditsUsed(data.creditsUsed);
+                } else {
+                    resultsDiv.innerHTML = `<div class="empty-state">
+                        <h3>Error</h3>
+                        <p>${data.error || 'Failed to extract Instagram data'}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Instagram extraction error:', error);
+                resultsDiv.innerHTML = `<div class="empty-state">
+                    <h3>Connection Error</h3>
+                    <p>Please check your API configuration</p>
+                </div>`;
+            }
+        }
+        
+        function displayInstagramResults(results) {
+            const resultsDiv = document.getElementById('instagramResults');
+            let html = '';
+            
+            results.forEach(item => {
+                html += `
+                    <div class="result-card">
+                        <div class="result-media">
+                            <img src="${item.thumbnail || 'https://via.placeholder.com/400'}" alt="${item.caption || 'Instagram post'}">
+                        </div>
+                        <div class="result-content">
+                            <h4>${item.username || 'Unknown User'}</h4>
+                            <p>${item.caption ? item.caption.substring(0, 150) + '...' : 'No caption'}</p>
+                            <div class="result-metrics">
+                                <span class="metric">❤️ ${item.likes || 0}</span>
+                                <span class="metric">💬 ${item.comments || 0}</span>
+                                <span class="metric">👁️ ${item.views || 'N/A'}</span>
+                            </div>
+                            <button class="action-btn save" onclick="saveInstagramItem(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                Save Data
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html || '<div class="empty-state"><h3>No results found</h3></div>';
+        }
+        
+        // TikTok Extractor Functions
+        async function extractTikTokData() {
+            const type = document.getElementById('tiktokExtractionType').value;
+            const target = document.getElementById('tiktokTarget').value;
+            const limit = document.getElementById('tiktokLimit').value;
+            const sort = document.getElementById('tiktokSort').value;
+            
+            if (!target && type !== 'trending') {
+                alert('Please enter a username, hashtag, or sound URL');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('tiktokResults');
+            resultsDiv.innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const response = await fetch('/.netlify/functions/tiktok-extractor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type,
+                        target,
+                        limit: parseInt(limit),
+                        sort,
+                        apifyToken: localStorage.getItem('apifyToken') || ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayTikTokResults(data.results);
+                    updateCreditsUsed(data.creditsUsed);
+                } else {
+                    resultsDiv.innerHTML = `<div class="empty-state">
+                        <h3>Error</h3>
+                        <p>${data.error || 'Failed to extract TikTok data'}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('TikTok extraction error:', error);
+                resultsDiv.innerHTML = `<div class="empty-state">
+                    <h3>Connection Error</h3>
+                    <p>Please check your API configuration</p>
+                </div>`;
+            }
+        }
+        
+        function displayTikTokResults(results) {
+            const resultsDiv = document.getElementById('tiktokResults');
+            let html = '';
+            
+            results.forEach(item => {
+                html += `
+                    <div class="result-card">
+                        <div class="result-media">
+                            <img src="${item.cover || 'https://via.placeholder.com/400'}" alt="${item.description || 'TikTok video'}">
+                            <div class="play-button">▶</div>
+                        </div>
+                        <div class="result-content">
+                            <h4>@${item.author || 'Unknown'}</h4>
+                            <p>${item.description ? item.description.substring(0, 150) + '...' : 'No description'}</p>
+                            <div class="result-metrics">
+                                <span class="metric">❤️ ${formatNumber(item.likes || 0)}</span>
+                                <span class="metric">💬 ${formatNumber(item.comments || 0)}</span>
+                                <span class="metric">🔄 ${formatNumber(item.shares || 0)}</span>
+                                <span class="metric">👁️ ${formatNumber(item.views || 0)}</span>
+                            </div>
+                            <button class="action-btn save" onclick="saveTikTokItem(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                Save Data
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html || '<div class="empty-state"><h3>No results found</h3></div>';
+        }
+        
+        // Lead Generator Functions
+        async function generateLeads() {
+            const query = document.getElementById('mapsQuery').value;
+            const location = document.getElementById('mapsLocation').value;
+            const radius = document.getElementById('mapsRadius').value;
+            const limit = document.getElementById('mapsLimit').value;
+            const fields = document.getElementById('mapsFields').value;
+            const verified = document.getElementById('mapsVerified').checked;
+            
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('leadsResults');
+            resultsDiv.innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const response = await fetch('/.netlify/functions/lead-generator', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query,
+                        location,
+                        radius: parseInt(radius),
+                        limit: parseInt(limit),
+                        fields,
+                        verified,
+                        apifyToken: localStorage.getItem('apifyToken') || ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayLeadResults(data.results);
+                    updateCreditsUsed(data.creditsUsed);
+                    updateLeadsGenerated(data.results.length);
+                } else {
+                    resultsDiv.innerHTML = `<div class="empty-state">
+                        <h3>Error</h3>
+                        <p>${data.error || 'Failed to generate leads'}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Lead generation error:', error);
+                resultsDiv.innerHTML = `<div class="empty-state">
+                    <h3>Connection Error</h3>
+                    <p>Please check your API configuration</p>
+                </div>`;
+            }
+        }
+        
+        function displayLeadResults(results) {
+            const resultsDiv = document.getElementById('leadsResults');
+            let html = '<div style="margin-bottom: 1rem;">';
+            html += `<button class="action-btn" onclick="exportLeads('csv')">Export CSV</button> `;
+            html += `<button class="action-btn" onclick="exportLeads('json')">Export JSON</button>`;
+            html += '</div>';
+            
+            results.forEach(business => {
+                html += `
+                    <div class="result-card">
+                        <div class="result-content">
+                            <h4>${business.name}</h4>
+                            <p>${business.address}</p>
+                            <div class="result-metrics">
+                                <span class="metric">📞 ${business.phone || 'N/A'}</span>
+                                <span class="metric">🌐 ${business.website || 'N/A'}</span>
+                                <span class="metric">⭐ ${business.rating || 'N/A'} (${business.reviews || 0} reviews)</span>
+                            </div>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                                ${business.category || 'Business'} • ${business.priceLevel || '$'}
+                            </p>
+                            <button class="action-btn save" onclick="saveLeadItem(${JSON.stringify(business).replace(/"/g, '&quot;')})">
+                                Save Lead
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html || '<div class="empty-state"><h3>No businesses found</h3></div>';
+        }
+        
+        // Website Crawler Functions
+        async function crawlWebsite() {
+            const url = document.getElementById('crawlerUrl').value;
+            const depth = document.getElementById('crawlerDepth').value;
+            const type = document.getElementById('crawlerType').value;
+            
+            if (!url) {
+                alert('Please enter a website URL');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('crawlerResults');
+            resultsDiv.innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const response = await fetch('/.netlify/functions/web-crawler', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        url,
+                        depth: parseInt(depth),
+                        type,
+                        apifyToken: localStorage.getItem('apifyToken') || ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCrawlerResults(data.results);
+                    updateCreditsUsed(data.creditsUsed);
+                } else {
+                    resultsDiv.innerHTML = `<div class="empty-state">
+                        <h3>Error</h3>
+                        <p>${data.error || 'Failed to crawl website'}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Web crawler error:', error);
+                resultsDiv.innerHTML = `<div class="empty-state">
+                    <h3>Connection Error</h3>
+                    <p>Please check your API configuration</p>
+                </div>`;
+            }
+        }
+        
+        function displayCrawlerResults(results) {
+            const resultsDiv = document.getElementById('crawlerResults');
+            let html = '';
+            
+            results.forEach(page => {
+                html += `
+                    <div class="result-card">
+                        <div class="result-content">
+                            <h4>${page.title || 'Untitled Page'}</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-light);">${page.url}</p>
+                            <p>${page.description || page.content?.substring(0, 200) + '...' || 'No content'}</p>
+                            <div class="result-metrics">
+                                <span class="metric">📝 ${page.wordCount || 0} words</span>
+                                <span class="metric">🔗 ${page.links?.length || 0} links</span>
+                                <span class="metric">🖼️ ${page.images?.length || 0} images</span>
+                            </div>
+                            <button class="action-btn save" onclick="saveCrawlerData(${JSON.stringify(page).replace(/"/g, '&quot;')})">
+                                Save Data
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html || '<div class="empty-state"><h3>No pages found</h3></div>';
+        }
+        
+        // PR Strategy Functions
+        async function generatePRStrategy() {
+            const goal = document.getElementById('prGoal').value;
+            const industry = document.getElementById('prIndustry').value;
+            const audience = document.getElementById('prAudience').value;
+            
+            if (!goal) {
+                alert('Please describe your PR campaign objectives');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('prResults');
+            resultsDiv.innerHTML = '<div class="spinner active"></div>';
+            
+            try {
+                const response = await fetch('/.netlify/functions/pr-strategy-generator', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        goal,
+                        industry,
+                        audience,
+                        apiKeys: {
+                            openai: localStorage.getItem('openaiKey'),
+                            claude: localStorage.getItem('claudeKey')
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayPRStrategy(data.strategy);
+                } else {
+                    resultsDiv.innerHTML = `<div class="empty-state">
+                        <h3>Error</h3>
+                        <p>${data.error || 'Failed to generate PR strategy'}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('PR strategy error:', error);
+                resultsDiv.innerHTML = `<div class="empty-state">
+                    <h3>Connection Error</h3>
+                    <p>Please configure your AI API keys</p>
+                </div>`;
+            }
+        }
+        
+        function displayPRStrategy(strategy) {
+            const resultsDiv = document.getElementById('prResults');
+            let html = `
+                <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3>Your PR Strategy</h3>
+                    ${strategy.overview ? `<p>${strategy.overview}</p>` : ''}
+                    
+                    ${strategy.keyMessages ? `
+                        <h4>Key Messages</h4>
+                        <ul>
+                            ${strategy.keyMessages.map(msg => `<li>${msg}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                    
+                    ${strategy.mediaTargets ? `
+                        <h4>Media Targets</h4>
+                        <ul>
+                            ${strategy.mediaTargets.map(target => `<li>${target}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                    
+                    ${strategy.tactics ? `
+                        <h4>Tactics & Timeline</h4>
+                        <ul>
+                            ${strategy.tactics.map(tactic => `<li>${tactic}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                    
+                    ${strategy.metrics ? `
+                        <h4>Success Metrics</h4>
+                        <ul>
+                            ${strategy.metrics.map(metric => `<li>${metric}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Helper Functions
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function updateCreditsUsed(credits) {
+            const remaining = parseInt(document.getElementById('creditsRemaining').textContent) - credits;
+            document.getElementById('creditsRemaining').textContent = remaining;
+            document.getElementById('creditsCount').textContent = remaining;
+            
+            const extracted = parseInt(document.getElementById('totalExtracted').textContent) + credits;
+            document.getElementById('totalExtracted').textContent = extracted;
+        }
+        
+        function updateLeadsGenerated(count) {
+            const current = parseInt(document.getElementById('leadsGenerated').textContent);
+            document.getElementById('leadsGenerated').textContent = current + count;
+        }
+        
+        function exportLeads(format) {
+            // Implementation for exporting leads
+            alert(`Exporting leads as ${format.toUpperCase()}...`);
+        }
+        
+        function saveInstagramItem(item) {
+            // Save to local storage or database
+            const saved = JSON.parse(localStorage.getItem('savedInstagram') || '[]');
+            saved.push(item);
+            localStorage.setItem('savedInstagram', JSON.stringify(saved));
+            alert('Instagram data saved!');
+        }
+        
+        function saveTikTokItem(item) {
+            const saved = JSON.parse(localStorage.getItem('savedTikTok') || '[]');
+            saved.push(item);
+            localStorage.setItem('savedTikTok', JSON.stringify(saved));
+            alert('TikTok data saved!');
+        }
+        
+        function saveLeadItem(item) {
+            const saved = JSON.parse(localStorage.getItem('savedLeads') || '[]');
+            saved.push(item);
+            localStorage.setItem('savedLeads', JSON.stringify(saved));
+            alert('Lead saved!');
+        }
+        
+        function saveCrawlerData(data) {
+            const saved = JSON.parse(localStorage.getItem('savedCrawler') || '[]');
+            saved.push(data);
+            localStorage.setItem('savedCrawler', JSON.stringify(saved));
+            alert('Website data saved!');
         }
     </script>
     
