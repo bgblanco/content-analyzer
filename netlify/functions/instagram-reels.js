@@ -26,6 +26,7 @@ exports.handler = async (event) => {
       limit = 5, 
       transcribe = false,
       filterAIContent = false,
+      includeSharesCount = false,
       apifyToken 
     } = JSON.parse(event.body);
 
@@ -59,7 +60,7 @@ exports.handler = async (event) => {
 
     try {
       // Call Apify Instagram Reels scraper
-      const reelsData = await fetchInstagramReels(usernameList, limit, APIFY_TOKEN);
+      const reelsData = await fetchInstagramReels(usernameList, limit, includeSharesCount, APIFY_TOKEN);
       
       // Process and enhance the data
       let processedReels = reelsData.map(reel => ({
@@ -75,6 +76,7 @@ exports.handler = async (event) => {
           comments: reel.commentsCount || reel.comments_count || 0,
           views: reel.videoViewCount || reel.video_view_count || 0,
           plays: reel.videoPlayCount || reel.video_play_count || 0,
+          shares: reel.sharesCount || reel.shares_count || null,
         },
         duration: reel.videoDuration || reel.video_duration || 0,
         hashtags: extractHashtags(reel.caption || ''),
@@ -158,14 +160,14 @@ exports.handler = async (event) => {
 };
 
 // Fetch Instagram Reels using Apify
-async function fetchInstagramReels(usernames, limit, token) {
+async function fetchInstagramReels(usernames, limit, includeSharesCount, token) {
   const ACTOR_ID = 'xMc5Ga1oCONPmWJIa'; // Instagram Reels scraper actor
   
   // Prepare the input for the actor
   const input = {
     username: usernames,
     resultsLimit: limit,
-    // Additional options can be added based on the actor's requirements
+    includeSharesCount: includeSharesCount // Paid feature for share counts
   };
 
   // Run the actor synchronously and get results

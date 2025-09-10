@@ -447,6 +447,67 @@
             margin-bottom: 0.25rem;
         }
 
+        /* Instagram Reels specific media styles */
+        .reels-media {
+            position: relative;
+            width: 100%;
+            padding-top: 177.78%; /* 9:16 aspect ratio for Instagram Reels */
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .reels-media img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .reels-media video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reels-play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reels-play-overlay:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .reels-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
         .metric-icon {
             width: 16px;
             height: 16px;
@@ -3762,19 +3823,13 @@ METRICS TO BEAT:
                             ${aiBadge}
                         </div>` : ''}
                         
-                        <div class="result-media" style="position: relative; cursor: pointer;" 
-                             onclick="playReelPreview('${reel.videoUrl}', '${reel.thumbnailUrl}', this)">
+                        <div class="reels-media" onclick="playReelPreview('${reel.videoUrl}', '${reel.thumbnailUrl}', this)">
                             <img src="${reel.thumbnailUrl || 'https://via.placeholder.com/640x800'}" 
-                                 alt="Reel by ${reel.username}" 
-                                 style="width: 100%; height: auto; border-radius: 8px;">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                                        background: rgba(0,0,0,0.7); border-radius: 50%; padding: 15px; 
-                                        display: flex; align-items: center; justify-content: center;">
+                                 alt="Reel by ${reel.username}">
+                            <div class="reels-play-overlay">
                                 <span style="color: white; font-size: 24px;">▶️</span>
                             </div>
-                            ${reel.duration ? `<span style="position: absolute; bottom: 10px; right: 10px; 
-                                                           background: rgba(0,0,0,0.7); color: white; 
-                                                           padding: 2px 6px; border-radius: 4px; font-size: 12px;">
+                            ${reel.duration ? `<span class="reels-duration">
                                 ${formatDuration(reel.duration)}
                             </span>` : ''}
                         </div>
@@ -3848,13 +3903,16 @@ METRICS TO BEAT:
                 video.src = videoUrl;
                 video.controls = true;
                 video.autoplay = true;
-                video.style.width = '100%';
-                video.style.borderRadius = '8px';
+                video.className = 'reel-video';
                 
-                // Replace image with video
+                // Clear the media container and add video
                 element.innerHTML = '';
                 element.appendChild(video);
                 element.onclick = null;
+                
+                // Remove padding since video will fill the space
+                element.style.paddingTop = '0';
+                element.style.height = 'auto';
             } else {
                 alert('Video preview not available for demo content');
             }

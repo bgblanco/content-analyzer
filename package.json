@@ -21,7 +21,7 @@
     "rate-limiter-flexible": "^5.0.3"
   },
   "devDependencies": {
-    "netlify-cli": "^17.36.4"
+    "netlify-cli": "^17.38.1"
   },
   "keywords": [
     "content-analyzer",
