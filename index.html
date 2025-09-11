@@ -3770,8 +3770,10 @@ METRICS TO BEAT:
                 });
                 
                 const data = await response.json();
+                console.log('Instagram Reels API Response:', data);
                 
                 if (data.success) {
+                    console.log('Displaying reels:', data.reels);
                     displayInstagramReels(data.reels, data.isDemo);
                     if (data.isDemo) {
                         showNotification('Using demo data. Configure Apify token for real content.', 'warning');
@@ -3794,6 +3796,7 @@ METRICS TO BEAT:
         
         function displayInstagramReels(reels, isDemo = false) {
             const resultsDiv = document.getElementById('reelsResults');
+            console.log('displayInstagramReels called with:', reels);
             
             if (!reels || reels.length === 0) {
                 resultsDiv.innerHTML = '<div class="empty-state"><h3>No reels found</h3></div>';
@@ -3893,6 +3896,8 @@ METRICS TO BEAT:
                 `;
             });
             
+            console.log('Generated HTML length:', html.length);
+            console.log('Setting innerHTML to resultsDiv');
             resultsDiv.innerHTML = html;
         }
         
